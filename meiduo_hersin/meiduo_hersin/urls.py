@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from django.http import HttpResponse
@@ -42,12 +42,13 @@ def log(request):
     logger.info('日志信息....')
     logger.warning('警告提示....')
 
-
-
     return HttpResponse('log')
 
 
 urlpatterns = [
+    # url(r'^log/$', log)
     url(r'^admin/', admin.site.urls),
-    url(r'^log/$', log)
+    # 在给子应用里面定义url时,一般会给其起名字,会设置namespace,其名字和子应用名字一样
+    url(r'^', include('apps.users.urls', namespace='users')),
+
 ]

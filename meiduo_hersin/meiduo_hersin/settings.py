@@ -25,7 +25,10 @@ SECRET_KEY = 'ode2i%*gyip-jlf5n27(o9vdsa62a_ir)n-%_l%=96h6gu%%(b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+# 这是一个安全机制,允许我们以什么形式(域名/Ip)来访问后端
+# 默认是 127.0.0.1
+ALLOWED_HOSTS = ['www.meiduo.site', '127.0.0.1']
 
 
 # Application definition
@@ -36,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'apps.users.apps.UsersConfig',  # 因为我们的子应用已经放到apps的包中,所以要添加apps.xxx
     'django.contrib.staticfiles',
 ]
 
