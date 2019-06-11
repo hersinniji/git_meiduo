@@ -144,6 +144,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# 告知系统去哪里找静态文件
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,  # 是否禁用已经存在的日志器
