@@ -50,5 +50,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # 在给子应用里面定义url时,一般会给其起名字,会设置namespace,其名字和子应用名字一样
     url(r'^', include('apps.users.urls', namespace='users')),
+    url(r'^', include('apps.contents.urls', namespace='contents')),
 
 ]
