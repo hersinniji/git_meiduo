@@ -36,3 +36,4 @@ class RegisterView(View):
         :param request:
         :return:
         """
+        pass

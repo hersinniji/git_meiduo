@@ -31,7 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['www.meiduo.site', '127.0.0.1']
 
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
