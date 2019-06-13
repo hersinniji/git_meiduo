@@ -1,5 +1,6 @@
 import re
 from django import http
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -104,3 +105,37 @@ class RegisterView(View):
 
         path = reverse('contents:index')
         return redirect(path)
+
+
+# 用户输入用户名后判断是否重复
+"""
+# 开发思路:
+    前端:失去焦点之后,发送一个ajax请求,这个请求包含 用户名
+    后端:接收数据,在数据库中查询用户名是否存在
+    
+    详细思路:
+    1.用户输入用户名,当光标离开输入区时,前端发送异步ajax请求给后端
+       1.1.这个请求包含 用户名
+    2.后端接收前端发来的请求,并在数据库中进行查询,判断用户名是否重复
+       确定请求方式和路由(敏感数据推荐使用POST):
+       2.1.设置前端请求方式为查询字符串方式  usernames/***/count/
+       2.2.使用关键字参数的路由进行正则匹配,匹配后引导至用户判断视图函数
+       2.3.由于用户名非敏感信息,故采用get请求方式
+    3.判断完成后将想用返回给前端(前端发送ajax请求,所以返回响应为JsonResponse响应方式)
+"""
+
+
+class UsernameCountView(View):
+
+    def get(self, request, username):
+        try:
+            count = User.objects.filter(username=username).count()
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': 400, 'errmsg': '数据库异常!'})
+        if count == 0:
+            return http.JsonResponse({'code': 0, 'count': count})
+        else:
+            return http.JsonResponse({'code': 400, 'errmsg': '用户名重复!'})
+
+
