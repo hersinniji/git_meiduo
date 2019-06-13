@@ -57,6 +57,7 @@ class RegisterView(View):
         password = data.get('password')
         password2 = data.get('password2')
         mobile = data.get('mobile')
+        allow = data.get('allow')
 
         # 2.数据的验证,先验证是否有空的,再逐个验证是否有效
         if not all([username, password, password2, mobile]):
@@ -70,6 +71,8 @@ class RegisterView(View):
             return http.HttpResponseBadRequest('密码不合法')
         if not re.match(r'1[3-9]\d{9}', mobile):
             return http.HttpResponseBadRequest('密码不合法')
+        if not allow:
+            return http.HttpResponseBadRequest('请勾选用户同意协议')
 
         # 3.验证无误进行数据入库
             # 如果直接使用create入库,那么密码为明文.所以这里使用
@@ -82,7 +85,8 @@ class RegisterView(View):
             # 使用logger对象调用error错误方法,记录当前的异常(或者错误)
             logger.error(e)
             # 这里给html传递一个变量content,便可以通过模板语言if动态的显示数据异常
-            return render(request, 'register.html', content={'error_message': '数据库异常!'})
+            content = {'error_message': '数据库异常!'}
+            return render(request, 'register.html', content)
             return http.HttpResponseBadRequest('数据库异常!')
 
         # 4.返回响应
@@ -90,5 +94,13 @@ class RegisterView(View):
         # 这里如果注册成功的话,可以直接进行重定向,定向到商城首页,
         # 因此需要创建子应用,包含首页视图函数
         # 4.返回响应(通过重定向到首页的方式返回给浏览器)
+
+        # 注册完成之后,默认用户已经登录,需要保持登录的状态,这里可以使用session或者cookie
+        # 本次使用session,自己实现的话使用,request.session
+
+        # 系统也能自己去帮我们实现 登录状态的保持
+        from django.contrib.auth import login
+        login(request, user)
+
         path = reverse('contents:index')
         return redirect(path)
