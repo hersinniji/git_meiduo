@@ -51,5 +51,6 @@ urlpatterns = [
     # 在给子应用里面定义url时,一般会给其起名字,会设置namespace,其名字和子应用名字一样
     url(r'^', include('apps.users.urls', namespace='users')),
     url(r'^', include('apps.contents.urls', namespace='contents')),
+    url(r'^', include('apps.verifications.urls', namespace='verifications')),
 
 ]
