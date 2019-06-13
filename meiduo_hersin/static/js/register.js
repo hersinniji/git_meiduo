@@ -4,7 +4,7 @@ var vm = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         host: host,
-        error_name: true,
+        error_name: false,
         error_password: false,
         error_password2: false,
         error_check_password: false,
@@ -29,7 +29,7 @@ var vm = new Vue({
         mobile: '',
         image_code: '',
         sms_code: '',
-        allow: false,
+        allow: true,
     },
     mounted: function () {
         // 向服务器获取图片验证码
@@ -58,7 +58,7 @@ var vm = new Vue({
         },
         // 检查用户名
         check_username: function () {
-            var re = /^[a-zA-Z0-9_-]{5,20}$/;
+            var re = /^[a-zA-Z0-9_]{5,20}$/;
             if (re.test(this.username)) {
                 this.error_name = false;
             } else {
@@ -66,7 +66,23 @@ var vm = new Vue({
                 this.error_name = true;
             }
 
+            // 在这里发送一个axios请求
 
+            // 1.组织url
+            let url = '/usernames/'+this.username+'/count/';
+        //    2.发送请求
+            axios.get(url).then(response=>{
+                // 3.请求成功的回调业务逻辑
+                console.log(response);
+                if(response.data.count == 0){
+                    this.error_name=false
+                }else{
+                    this.error_name=true;
+                    this.error_name_message='用户名已注册';
+                }
+            }).catch(error=>{
+
+            })
         },
         // 检查密码
         check_password: function () {
