@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="33023929-96ec-40d0-b020-348c5bb0b96f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../dump.rdb" beforeDir="false" afterPath="$PROJECT_DIR$/../dump.rdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/verifications/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/verifications/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/js/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/register.js" afterDir="false" />
-    </list>
+    <list default="true" id="33023929-96ec-40d0-b020-348c5bb0b96f" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/verifications/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="142" lean-forward="true" selection-start-line="142" selection-end-line="142" />
+            <state relative-caret-position="54">
+              <caret line="136" lean-forward="true" selection-start-line="136" selection-end-line="136" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
                 <marker date="1560507960907" expanded="true" signature="2063:3856" ph="..." />
@@ -152,7 +148,7 @@
     <other-services-enabled>true</other-services-enabled>
     <auto-save>true</auto-save>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="65" />
     <option name="y" value="24" />
     <option name="width" value="1252" />
@@ -362,15 +358,15 @@
       <workItem from="1560391310496" duration="4253000" />
       <workItem from="1560403069696" duration="11518000" />
       <workItem from="1560420646738" duration="9699000" />
-      <workItem from="1560483679719" duration="14559000" />
+      <workItem from="1560483679719" duration="14875000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="78366000" />
+    <option name="totallyTimeSpent" value="78682000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1252" height="747" extended-state="0" />
+    <frame x="65" y="24" width="1252" height="747" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17567568" />
@@ -764,8 +760,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/apps/verifications/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="142" lean-forward="true" selection-start-line="142" selection-end-line="142" />
+        <state relative-caret-position="54">
+          <caret line="136" lean-forward="true" selection-start-line="136" selection-end-line="136" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
             <marker date="1560507960907" expanded="true" signature="2063:3856" ph="..." />
