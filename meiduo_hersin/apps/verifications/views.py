@@ -135,14 +135,34 @@ class SmsCodeView(View):
         # 4.先生成一个随机短信码
         sms_code = '%06d' % random.randint(0, 999999)
 
-        # 5.先把短信验证码保存起来
-        #     redis保存, key: value方式
-        redis_conn.setex('sms_%s' % mobile, sms_code_expire_time, sms_code)
-        # 这里设置一个send_flag,用来判断是否已经给用户发过短信
-        redis_conn.setex('send_flag%s' % mobile, 60, 1)
+        # # 5.先把短信验证码保存起来
+        # #     redis保存, key: value方式
+        # redis_conn.setex('sms_%s' % mobile, sms_code_expire_time, sms_code)
+        # # 这里设置一个send_flag,用来判断是否已经给用户发过短信
+        # redis_conn.setex('send_flag%s' % mobile, 60, 1)
+
+        # 这里注意:
+        # 给redis服务器里面存数据时为两次.如果Redis服务端需要同时处理多个请求,
+        # 加上网络延迟,那么服务端利用率不高,效率较低,这时可以考虑使用管道来统一发送.
+        # 管道是基础Redis类的子类,它为在单个请求中向服务器缓存多个命令提供支持,
+        # 它们可以用于通过减少客户端和服务器之间来回TCP数据包的数量来显著提高命令组的性能
+
+
+        # 5.先把短信验证码保存起来(使用pipeline管道)
+        # ①创建管道
+        pipe = redis_conn.pipeline()
+        # ②
+        pipe.setex('sms_%s' % mobile, sms_code_expire_time, sms_code)
+        pipe.setex('send_flag%s' % mobile, 60, 1)
+        # ③让管道运行
+        pipe.execute()
 
         # 6.最后发送短信
-        CCP().send_template_sms(mobile, [sms_code, 5], 1)
+        # CCP().send_template_sms(mobile, [sms_code, 5], 1)
+
+        from celery_tasks.sms.tasks import send_sms_code
+        # send_sms_code 的参数平移到 delay 中
+        send_sms_code.delay(mobile, sms_code)
 
         return http.JsonResponse({'code': RETCODE.OK, 'msg': '短信验证码发送成功!'})
 
