@@ -1,3 +1,5 @@
+import random
+
 from django import http
 from django.shortcuts import render
 
@@ -5,8 +7,11 @@ from django.shortcuts import render
 from django.views import View
 from django_redis import get_redis_connection
 
-from apps.verifications.constants import image_code_expire_time
+from apps.verifications.constants import image_code_expire_time, sms_code_expire_time
 from libs.captcha.captcha import captcha
+from libs.yuntongxun.sms import CCP
+
+from utils.response_code import RETCODE
 
 """
 一.把需求写下来(前端需要收集什么 后端需要收集什么)
@@ -45,3 +50,78 @@ class ImageCodeView(View):
         redis_conn.setex('img_%s' % uuid, image_code_expire_time, text)
         # 4.返回图片验证码
         return http.HttpResponse(image, content_type='image/jpeg')
+
+
+# 短信验证
+"""
+开发流程:
+(总体思路:用户点击获取短信验证码按钮,我们就给用户发送短信)
+
+一.需求(前端需要做什么,后端需要做什么)
+    前端需要收集:手机号,用户输入的图片验证码内容和uuid
+    通过ajax发送给后端
+二.大体思路(后端的大体思路)
+    接收参数
+    验证参数
+    发送短信
+三.详细思路(纯后端)
+    1.接收参数(手机号,用户输入的图片验证码,uuid)
+    2.验证参数
+        验证手机号
+        三个参数必须有不能为空
+    3.验证用户输入的图片验证码和服务器保存的图片验证码一致
+        3.1用户的图片验证码
+        3.2服务器的验证码
+        3.3比对
+    4.先生成一个随机短信码
+    5.先把短信验证码保存起来
+        redis保存,key:value方式
+    6.最后发送
+四.确定请求方式和路由
+    GET
+    采用混合的方式
+     /sms_codes/(?P<mobile>1[3-9]\d{9})/?uuid=xxx&iamgecode=xxx
+    ①取URL的特定部分，如/weather/beijing/2018，可以在服务器端的路由中用正则表达式截取；
+    ②查询字符串（query string)，形如key1=value1&key2=value2；
+   
+"""
+
+
+class SmsCodeView(View):
+    def get(self, request, mobile):
+
+        # 1.接收参数(手机号, 用户输入的图片验证码, uuid)
+        image_code = request.GET.get('imagecode')
+        uuid = request.GET.get('uuid')
+
+        # 2.验证参数
+        #     验证手机号
+        #     三个参数必须有不能为空
+        if not [mobile, image_code, uuid]:
+            return http.JsonResponse({'code': RETCODE.NECESSARYPARAMERR, 'errmsg': '缺少必须的参数'})
+
+        # 3.验证用户输入的图片验证码和服务器保存的图片验证码一致
+        redis_conn = get_redis_connection('code')
+        redis_code = redis_conn.get('img_%s' % uuid)
+
+        #     3.1用户的图片验证码
+        #     3.2服务器的验证码
+        #     3.3比对
+        if redis_code is None:
+            return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码过期'})
+        if redis_code != image_code:
+            return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码错误'})
+
+        # 4.先生成一个随机短信码
+        sms_code = '%06d' % random.randint(0, 999999)
+
+        # 5.先把短信验证码保存起来
+        #     redis保存, key: value方式
+        redis_conn.setex('img_%s' % mobile, sms_code_expire_time, sms_code)
+
+        # 6.最后发送
+        CCP().send_template_sms(mobile, [sms_code, 5], 1)
+        return http.JsonResponse({'code': RETCODE.OK, 'msg': '短信验证码发送成功!'})
+
+
+
