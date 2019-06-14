@@ -91,8 +91,8 @@ class SmsCodeView(View):
     def get(self, request, mobile):
 
         # 1.接收参数(手机号, 用户输入的图片验证码, uuid)
-        image_code = request.GET.get('imagecode')
-        uuid = request.GET.get('uuid')
+        image_code = request.GET.get('image_code')
+        uuid = request.GET.get('image_code_id')
 
         # 2.验证参数
         #     验证手机号
@@ -109,7 +109,8 @@ class SmsCodeView(View):
         #     3.3比对
         if redis_code is None:
             return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码过期'})
-        if redis_code != image_code:
+        # 我们获取的redis数据都是bytes类型
+        if redis_code.decode().lower() != image_code.lower():
             return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码错误'})
 
         # 4.先生成一个随机短信码
@@ -117,7 +118,7 @@ class SmsCodeView(View):
 
         # 5.先把短信验证码保存起来
         #     redis保存, key: value方式
-        redis_conn.setex('img_%s' % mobile, sms_code_expire_time, sms_code)
+        redis_conn.setex('sms_%s' % mobile, sms_code_expire_time, sms_code)
 
         # 6.最后发送
         CCP().send_template_sms(mobile, [sms_code, 5], 1)
