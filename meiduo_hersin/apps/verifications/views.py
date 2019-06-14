@@ -13,6 +13,9 @@ from libs.yuntongxun.sms import CCP
 
 from utils.response_code import RETCODE
 
+import logging
+logger = logging.getLogger('django')
+
 """
 一.把需求写下来(前端需要收集什么 后端需要收集什么)
     前端需要生成一个随机码(uuid),把这个随机码给后端
@@ -100,15 +103,26 @@ class SmsCodeView(View):
         if not [mobile, image_code, uuid]:
             return http.JsonResponse({'code': RETCODE.NECESSARYPARAMERR, 'errmsg': '缺少必须的参数'})
 
-        # 3.验证用户输入的图片验证码和服务器保存的图片验证码一致
-        redis_conn = get_redis_connection('code')
-        redis_code = redis_conn.get('img_%s' % uuid)
+        # 操作外界资源(redis, mysql, file)时,进行异常捕获和处理
+        try:
+            # 3.验证用户输入的图片验证码和服务器保存的图片验证码一致
+            redis_conn = get_redis_connection('code')
+            redis_code = redis_conn.get('img_%s' % uuid)
 
-        #     3.1用户的图片验证码
-        #     3.2服务器的验证码
-        #     3.3比对
-        if redis_code is None:
-            return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码过期'})
+            #     3.1用户的图片验证码
+            #     3.2服务器的验证码
+            #     3.3比对
+            if redis_code is None:
+                return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码过期'})
+
+            # 添加一个删除图片验证码的逻辑
+            # 1. 删除可以防止用户再次比对
+            # 2. 因为redis数据库是保存在内存中,因此,不用的话就删掉,节省内存空间
+            redis_conn.delete('img_%s' % uuid)
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '数据库错误!'})
+
         # 我们获取的redis数据都是bytes类型
         if redis_code.decode().lower() != image_code.lower():
             return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码错误'})
