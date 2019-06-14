@@ -127,15 +127,23 @@ class SmsCodeView(View):
         if redis_code.decode().lower() != image_code.lower():
             return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码错误'})
 
+        # 如果发过那么稍等再发,用来提示用户发送太过频繁
+        sms_send_flag = redis_conn.get('send_flag%s' % mobile)
+        if sms_send_flag:
+            return http.JsonResponse({'code': RETCODE.THROTTLINGERR, 'errmsg': '短信发送太过频繁!'})
+
         # 4.先生成一个随机短信码
         sms_code = '%06d' % random.randint(0, 999999)
 
         # 5.先把短信验证码保存起来
         #     redis保存, key: value方式
         redis_conn.setex('sms_%s' % mobile, sms_code_expire_time, sms_code)
+        # 这里设置一个send_flag,用来判断是否已经给用户发过短信
+        redis_conn.setex('send_flag%s' % mobile, 60, 1)
 
-        # 6.最后发送
+        # 6.最后发送短信
         CCP().send_template_sms(mobile, [sms_code, 5], 1)
+
         return http.JsonResponse({'code': RETCODE.OK, 'msg': '短信验证码发送成功!'})
 
 

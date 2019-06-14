@@ -159,8 +159,7 @@ var vm = new Vue({
             var url = this.host + '/sms_codes/' + this.mobile + '/?image_code=' + this.image_code + '&image_code_id=' + this.image_code_id;
             axios.get(url, {
                 responseType: 'json'
-            })
-                .then(response => {
+            }).then(response => {
                     // 表示后端发送短信成功
                     if (response.data.code == '0') {
                         // 倒计时60秒，60秒后允许用户再次点击发送短信验证码的按钮
@@ -191,12 +190,12 @@ var vm = new Vue({
                         this.generate_image_code();
                         this.sending_flag = false;
                     }
-                })
-                .catch(error => {
+                }).catch(error => {
                     console.log(error.response);
                     this.sending_flag = false;
                 })
         },
+
         // 表单提交
         on_submit(){
             this.check_username();
