@@ -203,3 +203,9 @@ LOGGING = {
         },
     }
 }
+
+# 修改默认的用户认证后端
+AUTHENTICATION_BACKENDS = [
+    # 'django.contrib.auth.backends.ModelBackend'
+    'apps.users.utils.UsernameMobileModelBackend',
+]

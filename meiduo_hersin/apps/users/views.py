@@ -198,7 +198,7 @@ class LoginView(View):
         # ② 自己查询数据库(根据username查对应的user,再比对password)
 
         from django.contrib.auth import authenticate
-        # 默认的认证后端是调用了 from django.contrib.auth.backends import ModelBackend
+        # 默认的认证后端是调用了from django.contrib.auth.backends import ModelBackend
         # ModelBcakend 中的认证方法
 
         # 如果用户名和密码正确,则返回用户对象 user
