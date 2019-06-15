@@ -177,6 +177,8 @@ class LoginView(View):
         # 1.后端需要接收数据(username,password)
         username = request.POST.get('username')
         password = request.POST.get('password')
+        # 接收用户是否点击了记住登录的按钮,这个按钮属性名为 name="remembered"
+        remembered = request.POST.get('remembered')
 
         # 2.判断参数是否齐全,有没有空值
         if not all([username, password]):
@@ -205,8 +207,17 @@ class LoginView(View):
         # 6.如果成功则登录, 即状态保持
         if user:
             # 使用系统自带的 登陆成功后状态保持方法 login(request, user) 即设置session
-            # login方法就是将登录信息保存在session里面
+            # todo 重要: login方法就是将登录信息保存在session里面
             login(request, user)
+
+            if remembered == 'on':
+                # 记住登录并且重新设置session有效期
+                # request.session.set_expiry(secondes)
+                request.session.set_expiry(30*24*3600)
+            else:
+                request.session.set_expiry(0)
+
+            # 登录成功跳转到首页
             return redirect(reverse('contents:index'))
 
         # 7.如果验证不成功则提示,用户名或密码错误
