@@ -1,5 +1,6 @@
 import re
 from django import http
+from django.contrib.auth import login
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -170,3 +171,46 @@ class LoginView(View):
     def get(self, request):
 
         return render(request, 'login.html')
+
+    def post(self, request):
+
+        # 1.后端需要接收数据(username,password)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # 2.判断参数是否齐全,有没有空值
+        if not all([username, password]):
+            return http.HttpResponseBadRequest('缺少必要的参数')
+
+        # 3.判断用户名是否符合规则
+        if not re.match(r'^[0-9a-zA-Z_]{5,20}$', username):
+            return http.HttpResponseBadRequest('用户名不符合规则')
+
+        # 4.判断密码是否符合规则
+        if not re.match(r'^[0-9A-Za-z]{8,20}$', password):
+            return http.HttpResponseBadRequest('密码不符合规则')
+
+        # 5.验证用户名和密码
+        # 验证有两种方式:
+        # ① 使用django自带的认证后端方法(authenticate)
+        # ② 自己查询数据库(根据username查对应的user,再比对password)
+
+        from django.contrib.auth import authenticate
+        # 默认的认证后端是调用了 from django.contrib.auth.backends import ModelBackend
+        # ModelBcakend 中的认证方法
+
+        # 如果用户名和密码正确,则返回用户对象 user
+        user = authenticate(username=username, password=password)
+
+        # 6.如果成功则登录, 即状态保持
+        if user:
+            # 使用系统自带的 登陆成功后状态保持方法 login(request, user) 即设置session
+            # login方法就是将登录信息保存在session里面
+            login(request, user)
+            return redirect(reverse('contents:index'))
+
+        # 7.如果验证不成功则提示,用户名或密码错误
+        else:
+            content = {'account_errmsg': '用户名或密码错误!'}
+            return render(request, 'login.html', content)
+
