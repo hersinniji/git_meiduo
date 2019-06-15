@@ -200,12 +200,11 @@ class LoginView(View):
         from django.contrib.auth import authenticate
         # 默认的认证后端是调用了from django.contrib.auth.backends import ModelBackend
         # ModelBcakend 中的认证方法
-
         # 如果用户名和密码正确,则返回用户对象 user
         user = authenticate(username=username, password=password)
 
         # 6.如果成功则登录, 即状态保持
-        if user:
+        if user is not None:
             # 使用系统自带的 登陆成功后状态保持方法 login(request, user) 即设置session
             # todo 重要: login方法就是将登录信息保存在session里面
             login(request, user)
