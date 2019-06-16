@@ -227,3 +227,28 @@ class LoginView(View):
             content = {'account_errmsg': '用户名或密码错误!'}
             return render(request, 'login.html', content)
 
+
+"""
+需求:
+    用户点击退出,就把登陆信息删除
+    由于登陆信息是保存在session里面的,所以这里删除掉session即可!
+"""
+
+
+# 定义退出的视图
+class LogoutView(View):
+    def get(self, request):
+
+        # request.session.flush()
+        # 系统提供了退出的方法
+        from django.contrib.auth import logout
+
+        logout(request)
+
+        # 退出之后要跳转到指定页面
+        # 这里设置为跳转到首页
+        # 需要额外珊瑚粗cookie中的name, 因为首页的用户信息展示是通过username来判断的
+        response = redirect(reverse('contents:index'))
+        response.delete_cookie('username')
+
+        return response
