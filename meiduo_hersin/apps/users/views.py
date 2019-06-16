@@ -217,8 +217,11 @@ class LoginView(View):
                 request.session.set_expiry(0)
 
             # 登录成功跳转到首页
-            return redirect(reverse('contents:index'))
-
+            # return redirect(reverse('contents:index'))
+            response = redirect(reverse('contents:index'))
+            # todo 这里的cookie 值是user.username 还是 username ???
+            response.set_cookie('username', username, 14*24*3600)
+            return response
         # 7.如果验证不成功则提示,用户名或密码错误
         else:
             content = {'account_errmsg': '用户名或密码错误!'}
