@@ -252,3 +252,18 @@ class LogoutView(View):
         response.delete_cookie('username')
 
         return response
+
+
+# 定义用户中心的视图
+
+# 用户中心必须是登陆过的用户才可以访问,当前问题是没有登陆也显示了
+# todo 重要:------------------------------------------------------------------------
+# 因此增加LoginRequiredMixin来判断验证,即当没有获取到相应的登陆信息后,会跳转到指定的url里面去.
+# 所以要想跳转到我们想指定去的地方,需要在setting.py里面修改这个默认的路由路径,即: LOGIN_URL = '/login/'
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+class UserCenterInfoView(LoginRequiredMixin, View):
+    def get(self, request):
+
+        return render(request, 'user_center_info.html')
