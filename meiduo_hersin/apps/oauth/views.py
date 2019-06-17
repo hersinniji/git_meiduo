@@ -83,6 +83,10 @@ class OauthQQUserView(View):
         # 这里通过调用get_access_token方法，函数内部自动将code、client_id、client_secret、redirect_uri
         # 几个信息拼接为路由，并进行访问，最终将响应数据进行转换和返回，返回值即为access_token
         token = qqoauth.get_access_token(code)
-        return render(request, 'oauth_callback.html')
+        # return render(request, 'oauth_callback.html')
+
+        # openid是此网站上唯一对应用户身份的标识，网站可将此ID进行存储便于用户下次登录时辨识其身份
+        # 或将其与用户在网站上的原有账号进行绑定。
+        openid = qqoauth.get_open_id(token)
 
 
