@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    # url(r'', ),
+    url(r'^qq/login/$', views.QQAuthUserView.as_view()),
 ]

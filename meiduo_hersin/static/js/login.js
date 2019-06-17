@@ -44,6 +44,7 @@ var vm = new Vue({
         // qq登录
         qq_login: function(){
             var next = get_query_string('next') || '/';
+            // var url = this.host + '/qq/login/?next=' + next;
             var url = this.host + '/qq/login/?next=' + next;
             axios.get(url, {
                     responseType: 'json'
