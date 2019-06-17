@@ -1,10 +1,13 @@
 from QQLoginTool.QQtool import OAuthQQ
 from django import http
-from django.shortcuts import render
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
 
 # Create your views here
+from django.urls import reverse
 from django.views import View
 
+from apps.oauth.models import OAuthQQUser
 from meiduo_hersin import settings
 
 """
@@ -89,4 +92,25 @@ class OauthQQUserView(View):
         # 或将其与用户在网站上的原有账号进行绑定。
         openid = qqoauth.get_open_id(token)
 
+        # todo 获取到openid后需要做什么事情？？？
+        """
+        ① 通过openid查询记录，若记录存在，则实现状态保持，并重定向到首页
+        ② 如果没有同样的openid，则引导到用户绑定界面，提示用户进行绑定（qq账号和meiduo商城账号）。
+        """
 
+        try:
+            qquser = OAuthQQUser.objects.get(openid=openid)
+        except OAuthQQUser.DoesNotExist:
+            # ① 查询到记录不存在
+            # 在给前端返回这个绑定界面时，应该把openid也返回给前端，这样，当用户填写完成信息后，点击提交按钮
+            # 可以将openid和用户信息一并传给后端，方便后端进行一一对应，并存储openid数据。
+            # 不然的话，前端传递通过绑定界面传递给后端的信息没有openid，后端不知道该绑定谁
+            return render(request, 'oauth_callback.html', context={'openid': openid})
+        else:
+            # ② 查询到记录存在
+            response = redirect(reverse('contents:index'))
+            # 登录状态保持
+            login(request, qquser.user)
+            # 设置cookie信息
+            response.set_cookie('username', qquser.user.username, max_age=14*24*3600)
+            return response

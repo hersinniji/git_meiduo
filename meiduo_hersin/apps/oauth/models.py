@@ -9,6 +9,8 @@ from utils.models import BaseModel
 class OAuthQQUser(BaseModel):
     """QQ登录用户数据"""
 
+    # Foreignkey 使用了其他子应用的模型
+    # 这里采用‘子应用名.模型类名’
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='用户')
     # openid是此网站上唯一对应用户身份的标识，网站可将此ID进行存储便于用户下次登录时辨识其身份
     # 或将其与用户在网站上的原有账号进行绑定。
