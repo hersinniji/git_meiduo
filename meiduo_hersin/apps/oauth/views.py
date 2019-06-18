@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import View
 
 from apps.oauth.models import OAuthQQUser
-from apps.oauth.utils import generate_access_token
+from apps.oauth.utils import generate_access_token, check_access_token
 from apps.users.models import User
 from meiduo_hersin import settings
 
@@ -56,39 +56,10 @@ class QQAuthUserView(View):
 
         return http.JsonResponse({'login_url': login_url})
 
-    def post(self, request):
-        """   """
-
-        # 1.接收参数
-        mobile = request.POST.get('mobile')
-        password = request.POST.get('pwd')
-        sms_code_client = request.POST.get('sms_code')
-        access_token = request.POST.get('openid_access_token')
-
-        # 2.校验参数
-        # 判断参数是否齐全
-        if not all([mobile, password, sms_code_client, access_token]):
-            return http.HttpResponseBadRequest('缺少必传参数')
-
-        # 判断手机号是否合法
-        if not re.match(r'^1[3-9]\d{9}$', mobile):
-            return http.HttpResponseBadRequest('请输入正确的手机号码')
-
-        # 判断密码是否合格
-        if not re.match(r'^[0-9A-Za-z]{8,20}$', password):
-            return http.HttpResponseBadRequest('请输入8-20位的密码')
-
-        # 判断短信验证码是否一致
-        """
-        """
-        # 检测openid是否有效
-        """
-        """
-        # 3.保存注册数据（保存到用户表）
-        user = User.objects.get()
-
 
 """
+qq登录成功之后页面跳转
+
 一 把需求写下来（前端需要做什么，后端需要做什么）
     前端需要把用户同意的code(code是认证服务器返回的)提交给后端
     后端通过code换取token
@@ -105,7 +76,6 @@ class QQAuthUserView(View):
 """
 
 
-# qq登录成功之后页面跳转
 class OauthQQUserView(View):
 
     def get(self, request):
@@ -163,6 +133,90 @@ class OauthQQUserView(View):
 
             return response
 
+    """
+    通过post方法来绑定openid和用户信息
+
+    1.接收数据
+    2.获取数据
+    3.校验参数
+    4.openid解密
+    5.根据手机号进行用户信息的判断
+        5.1 如果手机号之前注册过，但没绑定过，则和当前这个用户进行绑定，绑定前要验证密码
+        5.2 如果此手机号之前没注册过，则重新创建用户，并和当前的openid进行绑定
+    6.设置登录的状态
+    7.设置cookie信息
+    8.跳转指定
+    """
+
+    def post(self, request):
+        """绑定openid和用户信息"""
+
+        # 1.接收数据
+        data = request.POST
+
+        # 2.获取数据
+        mobile = data.get('mobile')
+        password = data.get('pwd')
+        sms_code_client = data.get('sms_code')
+        access_token = data.get('access_token')
+
+        # 3.校验参数(参数是否有空值、参数格式是否正确)
+        # 判断参数是否齐全
+        if not all([mobile, password, sms_code_client, access_token]):
+            return http.HttpResponseBadRequest('缺少必传参数')
+
+        # 判断手机号是否合法
+        if not re.match(r'^1[3-9]\d{9}$', mobile):
+            return http.HttpResponseBadRequest('请输入正确的手机号码')
+
+        # 判断密码是否合格
+        if not re.match(r'^[0-9A-Za-z]{8,20}$', password):
+            return http.HttpResponseBadRequest('请输入8-20位的密码')
+
+        # # 判断短信验证码是否一致
+        # """
+        # """
+        # # 检测openid是否有效
+        # """
+        # """
+        # # 保存注册数据（保存到用户表）
+        # user = User.objects.get
+
+        # 4.openid解密
+        openid = check_access_token(access_token)
+
+        # 5.根据手机号进行用户信息的判断
+        try:
+            user = User.objects.get(moble=mobile)
+
+        # 5.1 如果此手机号之前没注册过，则重新创建用户，并和当前的openid进行绑定
+        except Exception as e:
+            user = User.objects.create(
+                moble=mobile,
+                password=password
+            )
+
+        # 5.2 如果手机号之前注册过，但没绑定过，则和当前这个用户进行绑定，绑定前要验证密码
+        else:
+            if not user.check_password(password):
+                return http.HttpResponseBadRequest('密码错误！')
+
+        OAuthQQUser.objects.create(
+            openid=openid,
+            user=user
+        )
+
+        # 6.设置登录的状态
+        login(request, user)
+
+        # 7.设置cookie信息
+        response = redirect(reverse('contents:index'))
+        response.set_cookie('username', user.username, max_age=14*24*3600)
+
+        # 8.跳转指定
+        return response
+
+
 
 #
 # # ###########################itadangerous的加密使用##################################
@@ -198,3 +252,16 @@ class OauthQQUserView(View):
 #
 # # 3.解密
 # s.loads('要解密的数据')
+
+# 加密之后的数据为二进制数，解密时可以直接对这个二进制数或者二进制转换后的数进行解密处理
+# >>> a = s.dumps(data)
+# >>> a
+# b'eyJhbGciOiJIUzUxMiIsImV4cCI6MTU2MDg1MzMxMCwiaWF0IjoxNTYwODQ5NzEwfQ.eyJvcGVuaWQiOiIxMjM0In0.nP9cVbmoUHCg9iHuTvXsBnzw-jqgF1KWCHGTfErpIwNfg9BvpKeP5b2_35EjOy9Gx6W171XhlCvPYRJfjc-mew'
+# >>> b = a.decode()
+# >>> b
+# 'eyJhbGciOiJIUzUxMiIsImV4cCI6MTU2MDg1MzMxMCwiaWF0IjoxNTYwODQ5NzEwfQ.eyJvcGVuaWQiOiIxMjM0In0.nP9cVbmoUHCg9iHuTvXsBnzw-jqgF1KWCHGTfErpIwNfg9BvpKeP5b2_35EjOy9Gx6W171XhlCvPYRJfjc-mew'
+# >>> s.loads(a)
+# {'openid': '1234'}
+# >>> s.loads(b)
+# {'openid': '1234'}
+# >>>

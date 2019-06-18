@@ -16,16 +16,15 @@
 
 """
 
-
-# openid加密,接收到openid之后进行加密并返回加密后的数据
 from apps.oauth.constants import openid_token_expire_time
 
+# 1.导入TimedJSONWebSignatureSerializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from meiduo_hersin import settings
 
+
+# openid加密,接收到openid之后进行加密并返回加密后的数据
 def generate_access_token(openid):
-
-    # 1.导入
-    from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-    from meiduo_hersin import settings
 
     # 2.创建实例对象
     # secret_key   秘钥   习惯上使用settings文件中的settings,secret_key
@@ -40,3 +39,11 @@ def generate_access_token(openid):
     # 4.加密
     access_token = s.dumps(data)
     return access_token.decode()
+
+
+# openid解密
+def check_access_token(openid):
+
+    s = Serializer(secret_key=settings.SECRET_KEY, expires_in=openid_token_expire_time)
+    check_openid = s.loads(openid)
+    return check_openid['openid']
