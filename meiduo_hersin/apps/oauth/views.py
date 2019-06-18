@@ -1,4 +1,5 @@
 from QQLoginTool.QQtool import OAuthQQ
+
 from django import http
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
@@ -8,7 +9,9 @@ from django.urls import reverse
 from django.views import View
 
 from apps.oauth.models import OAuthQQUser
+from apps.oauth.utils import openid_access_token
 from meiduo_hersin import settings
+
 
 """
 1.拼接用户跳转的url，当用户同意登录之后，会生成code
@@ -105,12 +108,61 @@ class OauthQQUserView(View):
             # 在给前端返回这个绑定界面时，应该把openid也返回给前端，这样，当用户填写完成信息后，点击提交按钮
             # 可以将openid和用户信息一并传给后端，方便后端进行一一对应，并存储openid数据。
             # 不然的话，前端传递通过绑定界面传递给后端的信息没有openid，后端不知道该绑定谁
-            return render(request, 'oauth_callback.html', context={'openid': openid})
+            access_token = openid_access_token(openid)
+            context = {'openid_access_token': access_token}
+            return render(request, 'oauth_callback.html', context)
         else:
             # ② 查询到记录存在
-            response = redirect(reverse('contents:index'))
+            # path = reverse('contents:index')
+            # response = redirect(path)
+
             # 登录状态保持
             login(request, qquser.user)
-            # 设置cookie信息
-            response.set_cookie('username', qquser.user.username, max_age=14*24*3600)
+
+            next = request.GET.get('state')
+            response = redirect(next)
+
+            # 设置cookie信息,登录时用户名写入到cookie，有效期为14天
+            response.set_cookie('username', qquser.user.username, max_age=14 * 24 * 3600)
+
             return response
+
+
+"""
+
+
+"""
+#
+# # ###########################itadangerous的加密使用##################################
+#
+# # 1.导入
+# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# from meiduo_hersin import settings
+#
+# # 2.创建实例对象
+# # secret_key   秘钥   习惯上使用settings文件中的settings,secret_key
+# # expire_in      过期时间      单位是秒
+# s = Serializer(secret_key=settings.SECRET_KEY, expires_in=3600)
+#
+# # 3.组织要加密的数据
+# data = {
+#     'openid': '1234'
+# }
+#
+# # 4.加密
+# s.dumps(data)
+#
+# # ###########################itadangerous的解密使用##################################
+# # 解密所需要的秘钥和时间是一样的
+#
+# # 1.导入
+# from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# from meiduo_hersin import settings
+#
+# # 2.创建实例对象
+# # secret_key   秘钥   习惯上使用settings文件中的settings,secret_key
+# # expire_in      过期时间      单位是秒
+# s = Serializer(secret_key=settings.SECRET_KEY, expires_in=3600)
+#
+# # 3.解密
+# s.loads('要解密的数据')

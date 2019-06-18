@@ -25,7 +25,8 @@
                     </div>
                     <div class="reg_form clearfix">
                         <form id="reg_form" method="post">
-                        <input type="hidden" value="{{ openid }}">
+                        {{ csrf_input }}
+                        <input type="hidden" value="{{ openid_access_token }}">
                             <ul>
                                 <li>
                                     <label>手机号:</label>
