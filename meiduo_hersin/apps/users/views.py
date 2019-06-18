@@ -1,3 +1,4 @@
+import json
 import re
 from django import http
 from django.contrib.auth import login
@@ -9,6 +10,8 @@ from django.views import View
 from apps.users.models import User
 import logging
 # 创建logger实例,并取个名字叫'Django'
+from utils.response_code import RETCODE
+
 logger = logging.getLogger('Django')
 
 
@@ -246,6 +249,7 @@ class LoginView(View):
 
 
 # 定义退出的视图
+
 class LogoutView(View):
     def get(self, request):
 
@@ -284,3 +288,72 @@ class UserCenterInfoView(LoginRequiredMixin, View):
 
         }
         return render(request, 'user_center_info.html', content)
+
+
+# 用户中心发送邮件
+"""
+一.把大体思路写下来(前端需要收集什么,后端需要做什么)
+    前端 当用户把邮箱内容填写完成后,点击保存按钮需要收集用户的邮箱信息,然后发送一个sjax请求给后端
+    
+    后端 要接收数据,然后保存数据(更新用户邮箱数据),并发送激活邮件,用户一点击就可以激活
+二.把大体思路写下来(后端的大体思路)
+    1.接收邮箱数据
+    2.验证邮箱数据
+    3.保存数据
+    4.发送激活邮件
+    5.返回响应
+
+三.把详细思路完善一下(纯后端)
+    1.接收邮箱数据
+    2.验证邮箱数据
+    3.保存数据(更新指定用户的邮箱信息)
+    4.发送激活邮件
+        编辑激活邮件的内容
+        能够发送邮件给用户的邮箱
+    5.返回响应
+
+四.确定请求方式和路由
+    get     :一般是获取数据
+    post    :一般是提交数据
+    put     :一般是更新数据(提交的数据在请求body中)    emails/
+    delete  :一般是删除数据
+"""
+
+
+class EmailView(View):
+
+    def put(self, request):
+
+        # 1.接收邮箱数据
+        data = json.loads(request.body.decode())
+        email = data.get('email')
+
+        # 2.验证邮箱数据
+        if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '数据保存失败'})
+
+        # 3.保存数据(更新指定用户的邮箱信息)
+        try:
+            request.user.email = email
+            request.user.save()
+        except Exception as e:
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '数据保存失败'})
+
+        # 4.发送激活邮件
+        # 编辑激活邮件的内容
+        # 能够发送邮件给用户的邮箱
+        #
+        # 5.返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
+
+
+
+
+
+
+
+
+
+
+
+
