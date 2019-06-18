@@ -17,7 +17,7 @@
 			<div class="welcome fl">欢迎来到美多商城!</div>
 			<div class="fr">
 				<div class="login_info fl">
-					欢迎您：<em>张 山</em>
+					欢迎您：<em>{{ username }}</em>
 				</div>
 				<div class="login_btn fl">
 					<a href="login.html">登录</a>
@@ -66,8 +66,8 @@
 				<div class="info_con clearfix">
 					<h3 class="common_title2">基本信息</h3>
 					<ul class="user_info_list">
-						<li><span>用户名：</span>张山</li>
-						<li><span>联系方式：</span>18500001111</li>
+						<li><span>用户名：</span>{{ username }}</li>
+						<li><span>联系方式：</span>{{ mobile }}</li>
 						<li>
 	                    <span>Email：</span>
 	                    <input type="text" name="email" class="email">
