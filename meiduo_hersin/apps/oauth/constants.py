@@ -1,0 +1,1 @@
+openid_token_expire_time = 3600
