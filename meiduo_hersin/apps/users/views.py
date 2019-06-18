@@ -216,9 +216,19 @@ class LoginView(View):
             else:
                 request.session.set_expiry(0)
 
+            # 这里需要注意，由于loginRequireMixin的存在，如果之前已经登录过，访问了其他页面
+            # 再次访问登录界面时，路径里面会自动增加next=/上次的访问页面/，所以这里需要进行判断
+            # 如果有next参数，则跳转到指定页面
+            # 如果没有，则跳转到首页
+            next = request.GET.get('next')
+            if next:
+                response = redirect(next)
+            else:
+                response = redirect(reverse('contents:index'))
+
             # 登录成功跳转到首页
             # return redirect(reverse('contents:index'))
-            response = redirect(reverse('contents:index'))
+            # response = redirect(reverse('contents:index'))
             # todo 这里的cookie 值是user.username 还是 username ???
             response.set_cookie('username', username, 14*24*3600)
             return response
