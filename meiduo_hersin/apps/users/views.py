@@ -279,6 +279,8 @@ class UserCenterInfoView(LoginRequiredMixin, View):
         content = {
             'username': request.user.username,
             'mobile': request.user.moble,
+            'email': request.user.email,
+            'email_active': request.user.email_active
 
         }
         return render(request, 'user_center_info.html', content)
