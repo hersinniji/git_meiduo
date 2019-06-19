@@ -2,8 +2,9 @@ import re
 
 from django.contrib.auth.backends import ModelBackend
 
+from apps.oauth.constants import openid_token_expire_time
 from apps.users.models import User
-
+from meiduo_hersin import settings
 
 """
 封装/抽取的思想
@@ -70,6 +71,27 @@ class UsernameMobileModelBackend(ModelBackend):
             return None
 
 
+# 生成邮箱内激活链接(确认的url)
+def active_eamil_url(email, user_id):
+
+    # 1.导入TimedJSONWebSignatureSerializer
+    from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+    # 2.创建实例对象
+    # secret_key   秘钥   习惯上使用settings文件中的settings,secret_key
+    # expire_in      过期时间      单位是秒
+    s = Serializer(secret_key=settings.SECRET_KEY, expires_in=openid_token_expire_time)
+
+    # 3.数据加密
+    data = {
+        'email': email,
+        'user_id': user_id
+    }
+    access_token = s.dumps(data).decode()
+    verify_url = 'http://www.meiduo.site:8000/email_active?token=%s' % access_token
+
+    # 返回加密后的数据
+    return verify_url
 
 
 

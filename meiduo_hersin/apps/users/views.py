@@ -10,6 +10,7 @@ from django.views import View
 from apps.users.models import User
 import logging
 # 创建logger实例,并取个名字叫'Django'
+from apps.users.utils import active_eamil_url
 from celery_tasks.email.tasks import send_active_email
 from meiduo_hersin import settings
 from utils.response_code import RETCODE
@@ -370,7 +371,8 @@ class EmailView(View):
 
         # 4.使用celery任务队列异步发动邮件
         # todo 切记不能忘了delay,不然不是异步发送!!!!!!
-        send_active_email.delay(email)
+        verify_url = active_eamil_url(email, request.user.id)
+        send_active_email.delay(email, verify_url)
 
         # 5.返回响应
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
