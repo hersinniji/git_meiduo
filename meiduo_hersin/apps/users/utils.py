@@ -88,11 +88,36 @@ def active_eamil_url(email, user_id):
         'user_id': user_id
     }
     access_token = s.dumps(data).decode()
-    verify_url = 'http://www.meiduo.site:8000/email_active?token=%s' % access_token
+    verify_url = 'http://www.meiduo.site:8000/email_active/?token=%s' % access_token
 
     # 返回加密后的数据
     return verify_url
 
+
+# 数据解密
+def check_active_eamil_url(token):
+
+    # 1.导入TimedJSONWebSignatureSerializer
+    from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+    # 2.创建实例对象
+    s = Serializer(secret_key=settings.SECRET_KEY, expires_in=openid_token_expire_time)
+
+    # 3.数据解密
+    # 这里的token有可能已经过期了,如果过期的话会报异常,因此这里需要进行异常捕获
+    from itsdangerous import BadSignature
+    try:
+        data = s.loads(token)
+    except BadSignature:
+        return None
+    email = data['email']
+    user_id = data['user_id']
+    try:
+        user = User.objects.get(id=user_id, email=email)
+    except User.DoesNotExist:
+        return None
+
+    return user
 
 
 

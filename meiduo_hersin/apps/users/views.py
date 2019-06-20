@@ -10,7 +10,7 @@ from django.views import View
 from apps.users.models import User
 import logging
 # 创建logger实例,并取个名字叫'Django'
-from apps.users.utils import active_eamil_url
+from apps.users.utils import active_eamil_url, check_active_eamil_url
 from celery_tasks.email.tasks import send_active_email
 from meiduo_hersin import settings
 from utils.response_code import RETCODE
@@ -376,6 +376,58 @@ class EmailView(View):
 
         # 5.返回响应
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
+
+
+# 激活邮件链接
+"""
+一.把大体思路写下来(前端需要收集什么,后端需要做什么)
+    用户点击激活链接后.会跳转到指定界面.
+    后端 通过路由中的参数获取用户的信息
+二.把大体思路写下来(后端的大体思路)
+    1.获取token
+    2.解密token数据
+    3.根据解密的数据查询用户
+    4.修改email_active字段为1
+    5.跳转到个人中心界面
+
+三.把详细思路完善一下(纯后端)
+    1.获取token数据是查询字符串的方式,使用request.GET去获取
+    2.使用isdangerous去解密token
+    3.根据解密的数据(user_id),查询用户信息
+    4.修改用户的信息(email_active)
+    5.跳转到个人中心
+
+四.确定请求方式和路由
+    get     email_active/
+"""
+
+
+class EmailActiveView(View):
+
+    def get(self, request):
+
+        # 1.获取token数据是查询字符串的方式, 使用request.GET去获取
+        token = request.GET.get('token')
+        if token is None:
+            return http.HttpResponseBadRequest('缺少必要参数')
+
+        # 2.使用is_dangerous去解密token
+        user = check_active_eamil_url(token)
+
+        # 3.根据解密的数据(user_id), 查询用户信息
+        if user is None:
+            return http.HttpResponseBadRequest('没有此用户')
+        user.eamil_active = True
+        user.save()
+
+        # 5.跳转到个人中心
+        return redirect(reverse('users:center'))
+
+
+
+
+
+
 
 
 
