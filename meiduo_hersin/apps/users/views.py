@@ -14,6 +14,7 @@ from apps.users.utils import active_eamil_url, check_active_eamil_url
 from celery_tasks.email.tasks import send_active_email
 from meiduo_hersin import settings
 from utils.response_code import RETCODE
+from utils.views import LoginRequiredJSONMixin
 
 logger = logging.getLogger('Django')
 
@@ -323,10 +324,17 @@ class UserCenterInfoView(LoginRequiredMixin, View):
 """
 
 
-# 因为这里接收的是ajax请求,ajax请求
-class EmailView(View):
+# 1.因为这里接收的是ajax请求,ajax请求使用postman也可以发送,为防止黑客和匿名用户恶意访问
+# 这里需要进行用户验证,验证内容为: 只有登录过的用户才可以访问发送邮件的接口.
+# 2.验证登录的话视图函数需要继承LoginRequiredMixin,若视图函数继承...Mixin
+# 当用户访问接口时,通过request.user判断用户是否已经登录
+# 没登录(is_authenticate是false)的话直接重定向到登录界面
+# 已登录则按照视图函数定义的响应走.
+# 但是继承LoginRequiredMixin的话,默认会返回 登录的重定向
+# 但是当前的视图是通过ajax来请求的,我们应该返回json数据,因此需要进行 重写
+class EmailView(LoginRequiredJSONMixin, View):
 
-    def put(self, request):
+    def get(self, request):
 
         # 1.接收邮箱数据
         data = json.loads(request.body.decode())
