@@ -323,6 +323,7 @@ class UserCenterInfoView(LoginRequiredMixin, View):
 """
 
 
+# 因为这里接收的是ajax请求,ajax请求
 class EmailView(View):
 
     def put(self, request):
