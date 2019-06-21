@@ -433,8 +433,12 @@ class EmailActiveView(View):
         return redirect(reverse('users:center'))
 
 
+# 用户中心收货地址视图
+class AddressView(View):
 
+    def get(self, request):
 
+        return render(request, 'user_center_site.html')
 
 
 

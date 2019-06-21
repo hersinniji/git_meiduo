@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^center/$', views.UserCenterInfoView.as_view(), name='center'),
     url(r'^emails/$', views.EmailView.as_view(), name='email'),
     url(r'^email_active/$', views.EmailActiveView.as_view(), name='emailactive'),
+    url(r'^address/$', views.AddressView.as_view(), name='addresss'),
 
 ]

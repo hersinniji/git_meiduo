@@ -94,5 +94,5 @@ class AreasView(View):
                         'name': sub.name
                     })
                 cache.set('sub_%s' % parent_id, sub_list, 24*3600)
-            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'sub_data': aub_list})
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'sub_data': sub_list})
 
