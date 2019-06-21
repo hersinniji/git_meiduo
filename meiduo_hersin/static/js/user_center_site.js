@@ -8,6 +8,7 @@ var vm = new Vue({
         provinces: [],
         cities: [],
         districts: [],
+
         form_address: {
             title: '',
             receiver: '',
@@ -19,6 +20,7 @@ var vm = new Vue({
             tel: '',
             email: '',
         },
+
         error_receiver: false,
         error_place: false,
         error_mobile: false,
@@ -31,6 +33,11 @@ var vm = new Vue({
         input_title: '',
         add_title:'新  增'
     },
+
+
+    //注意:这里为第一步,当加载模板时,即执行get_provinces函数,即发送ajax请求给服务器,
+    // 请求路由为var url = this.host + '/areas/',这时的http请求中没有查询字符串,所以视图函数判断为请求省份数据
+    // 响应返回所有省的列表,vue中的显示省份部分进行遍历并展示,因此渲染模板时,省份下拉框已经有省份遍历信息了
     mounted(){
         // 获取省份数据
         this.get_provinces();
@@ -159,6 +166,7 @@ var vm = new Vue({
             this.error_tel = false;
             this.error_email = false;
         },
+
         // 展示新增地址弹框时
         show_add_site(){
             this.is_show_edit = true;
@@ -184,7 +192,7 @@ var vm = new Vue({
             this.form_address = JSON.parse(JSON.stringify(this.addresses[index]));
             this.add_title='修  改';
         },
-        // 新增地址
+        // 保存新增地址
         save_address(){
             this.check_receiver();
             this.check_place();

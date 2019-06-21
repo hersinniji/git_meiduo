@@ -63,6 +63,7 @@
 		</div>
 		<div class="right_content clearfix">
 			<div class="site_top_con">
+{#                这里为点击新增收货地址触发事件#}
 				<a href="javascript:;" @click="show_add_site">新增收货地址</a>
 				<span>你已创建了<b>2</b>个收货地址，最多可创建<b>20</b>个</span>
 			</div>
@@ -122,13 +123,14 @@
 	</div>
 
 	<div class="pop_con" v-show="is_show_edit" v-cloak>
+
     <div class="site_con site_pop">
+{#            这里为点击新增/编辑收货地址后弹窗的内容#}
             <div class="site_pop_title">
                 <h3 v-if="editing_address_index">编辑收货地址</h3>
                 <h3 v-else>新增收货地址</h3>
                 <a @click="is_show_edit=false">×</a>
             </div>
-
             <form>
                 <div class="form_group">
                     <label>*收货人：</label>
@@ -136,10 +138,12 @@
                     <span v-show="error_receiver" class="receiver_error">请填写收件人</span>
                 </div>
 
-
                 <div class="form_group">
                     <label>*所在地区：</label>
                     <select v-model="form_address.province_id">
+{#                      <option> 与 <option/> 之间的值是浏览器显示在下拉列表中的内容，#}
+{#                      而 value 属性中的值是表单被提交时被发送到服务器的值。#}
+{#                      注释：如果没有指定 value 属性，选项的值将设置为 <option> 标签中的内容。#}
                         <option v-for="province in provinces" :value="province.id">[[ province.name ]]</option>
                     </select>
                     <select v-model="form_address.city_id">
@@ -180,8 +184,9 @@
                 <input @click="save_address" type="button" name="" value="新 增" class="info_submit">
                 <input @click="is_show_edit=false" type="reset" name="" value="取 消" class="info_submit info_reset">
             </form>
+
     </div>
-</div>
+    </div>
 
 	<div class="pop_con2">
 		<div class="confirm_pop">
