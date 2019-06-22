@@ -81,7 +81,7 @@
                     <h3>[[ address.title ]]</h3>
                     <a href="javascript:;" class="edit_icon"></a>
                     <em v-if="address.id===default_address_id">默认地址</em>
-                    <span class="del_site">×</span>
+                    <span class="del_site" @click="delete_address(index)">×</span>
                 </div>
                 <ul class="site_list">
                     <li><span>收货人：</span><b>[[ address.receiver ]]</b></li>

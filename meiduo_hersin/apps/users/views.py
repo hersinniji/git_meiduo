@@ -597,6 +597,25 @@ class AddressView(View):
     put     addresses/id/
 """
 
+# 用户中心收货地址管理(删除地址)思路
+"""
+一.需求(前端需要收集什么,后端需要做什么)
+    前端 告诉后端,要删除哪一条地址,即要删除地址的id传递给后端
+    后端 接收前端请求,删除指定的数据
+二.把大体思路写下来(后端的大体思路)
+    1.获取删除哪条数据(地址id)
+    2.查询数据库
+    3.删除对应id的地址信息
+    4.返回响应
+三.把详细思路完善一下(纯后端)
+    1.获取删除哪条数据(地址id)
+    2.查询数据库
+    3.删除对应id的地址信息
+    4.返回响应
+四.确定请求方式和路由
+    delete     addresses/id/
+"""
+
 
 # 用户中心收货地址管理(修改地址)
 class AddressUpdateView(View):
@@ -670,6 +689,36 @@ class AddressUpdateView(View):
         }
 
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'address': address_dict})
+
+    # 删除收货地址
+    def delete(self, request, address_id):
+
+        # 1.获取删除哪条数据(地址id)
+        try:
+            address = Address.objects.get(id=address_id)
+        except Exception as e:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'errmsg': '暂无此数据'})
+
+        # 2.查询数据库
+        # 3.删除对应id的地址信息
+        # 物理删除不推荐
+        # address.delete()
+
+        # 2.查询数据库
+        # 3.删除对应id的地址信息
+        try:
+            address.is_deleted = True
+            address.save()
+        except Exception as e:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'errmsg': '暂无此数据'})
+
+        # 4.返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
+
+
+
+
+
 
 
 
