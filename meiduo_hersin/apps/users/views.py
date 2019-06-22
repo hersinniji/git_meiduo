@@ -574,8 +574,102 @@ class AddressView(View):
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'address': address_dict})
 
 
+# 用户中心收货地址管理(修改地址)思路
+"""
+一.需求(前端需要收集什么,后端需要做什么)
+    前端 告诉后端,在编辑(修改)哪一条地址,即把正在编辑的地址的id传递给后端
+    后端 接收前端请求,更新指定的数据
+二.把大体思路写下来(后端的大体思路)
+    1.接收前端提交的修改数据
+    2.验证数据
+    3.获取修改哪条数据(地址的id)
+    4.根据id查询数据
+    5.更新(修改)数据
+    6.返回响应
+三.把详细思路完善一下(纯后端)
+    1.接收前端提交的修改数据
+    2.验证数据
+    3.获取修改哪条数据(地址的id)
+    4.根据id查询数据
+    5.更新(修改)数据
+    6.返回响应
+四.确定请求方式和路由
+    put     addresses/id/
+"""
 
 
+# 用户中心收货地址管理(修改地址)
+class AddressUpdateView(View):
+
+    def put(self, request, address_id):
+
+        # 1.接收前端提交的修改数据
+        json_dict = json.loads(request.body.decode())
+        receiver = json_dict.get('receiver')
+        province_id = json_dict.get('province_id')
+        city_id = json_dict.get('city_id')
+        district_id = json_dict.get('district_id')
+        place = json_dict.get('place')
+        mobile = json_dict.get('mobile')
+        tel = json_dict.get('tel')
+        email = json_dict.get('email')
+
+        # 2.验证数据
+        if not all([receiver, province_id, city_id, district_id, place, mobile]):
+            return http.HttpResponseBadRequest('缺少必传参数')
+        if not re.match(r'^1[3-9]\d{9}$', mobile):
+            return http.HttpResponseBadRequest('参数mobile有误')
+        if tel:
+            if not re.match(r'^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$', tel):
+                return http.HttpResponseBadRequest('参数tel有误')
+        if email:
+            if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+                return http.HttpResponseBadRequest('参数email有误')
+
+        # 3.获取修改哪条数据(id)
+        # 4.根据id查询数据
+        # address = Address.objects.get(id=address_id)
+        # 5.更新(修改)数据
+        # address.receiver=receiver
+        # address.mobile=mobile
+        # address.save()
+
+        # 3.获取修改哪条数据(地址的id)
+        # 4.根据id查询数据
+        # 5.更新(修改)数据
+        try:
+            Address.objects.filter(id=address_id).update(
+                user=request.user,
+                title=receiver,
+                receiver=receiver,
+                province_id=province_id,
+                city_id=city_id,
+                district_id=district_id,
+                place=place,
+                mobile=mobile,
+                tel=tel,
+                email=email
+            )
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '更新地址失败'})
+
+        # 6.返回响应
+        address = Address.objects.get(id=address_id)
+        address_dict = {
+            "id": address.id,
+            "title": address.title,
+            "receiver": address.receiver,
+            "province": address.province.name,
+            "city": address.city.name,
+            "district": address.district.name,
+            "place": address.place,
+            "mobile": address.mobile,
+            "tel": address.tel,
+            "email": address.email
+        }
+
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'address': address_dict})
 
 
 
