@@ -56,6 +56,7 @@ areas/?parent_id=xxx  获取市/区县的信息
 from django.core.cache import cache
 
 
+# 获取省市区信息视图
 class AreasView(View):
     def get(self, request):
         parent_id = request.GET.get('area_id')

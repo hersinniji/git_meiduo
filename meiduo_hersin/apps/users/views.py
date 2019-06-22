@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 # Create your views here.
-from apps.users.models import User
+from apps.users.models import User, Address
 import logging
 # 创建logger实例,并取个名字叫'Django'
 from apps.users.utils import active_eamil_url, check_active_eamil_url
@@ -272,15 +272,16 @@ class LogoutView(View):
         return response
 
 
-# 定义用户中心的视图
-
+# 定义用户中心视图的思路
 # 用户中心必须是登陆过的用户才可以访问,当前问题是没有登陆也显示了
 # todo 重要:------------------------------------------------------------------------
 # 因此增加LoginRequiredMixin来判断验证,即当没有获取到相应的登陆信息后,会跳转到指定的url里面去.
 # 所以要想跳转到我们想指定去的地方,需要在setting.py里面修改这个默认的路由路径,即: LOGIN_URL = '/login/'
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
+# 定义用户中心的视图
 class UserCenterInfoView(LoginRequiredMixin, View):
     def get(self, request):
 
@@ -294,7 +295,7 @@ class UserCenterInfoView(LoginRequiredMixin, View):
         return render(request, 'user_center_info.html', content)
 
 
-# 用户中心发送邮件
+# 用户中心发送邮件思路
 """
 一.把大体思路写下来(前端需要收集什么,后端需要做什么)
     前端 当用户把邮箱内容填写完成后,点击保存按钮需要收集用户的邮箱信息,然后发送一个sjax请求给后端
@@ -387,7 +388,7 @@ class EmailView(LoginRequiredJSONMixin, View):
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
 
 
-# 激活邮件链接
+# 激活邮件链接思路
 """
 一.把大体思路写下来(前端需要收集什么,后端需要做什么)
     用户点击激活链接后.会跳转到指定界面.
@@ -411,6 +412,7 @@ class EmailView(LoginRequiredJSONMixin, View):
 """
 
 
+# 激活邮件链接
 class EmailActiveView(View):
 
     def get(self, request):
@@ -433,6 +435,26 @@ class EmailActiveView(View):
         return redirect(reverse('users:center'))
 
 
+# 用户中心收货地址管理(新增地址)思路
+"""
+一.需求(前端需要收集什么,后端需要做什么)
+    前端 收集收货地址信息,然后发送ajax请求
+    后端 接收数据(添加地址信息),保存数据,返回响应
+二.把大体思路写下来(后端的大体思路)
+    1.接收数据
+    2.验证数据
+    3.数据入库
+    4.返回响应
+三.把详细思路完善一下(纯后端)
+    1.接收数据(收件人,地址,省,市,区.....)
+    2.验证数据(验证邮箱,固定电话,手机号....)
+    3.数据入库
+    4,返回响应(返回json数据)
+四.确定请求方式和路由
+    post     addresses/
+"""
+
+
 # 用户中心收货地址管理
 class AddressView(View):
 
@@ -440,6 +462,80 @@ class AddressView(View):
 
         return render(request, 'user_center_site.html')
 
+    # 接收用户提交的新增收货地址信息,用点击新增按钮,触发save_addresss函数,发送的是ajax请求
+    # 这里可以设置ajax请求的请求方式为post,配合前端js文件.
+    def post(self, request):
+
+        # 0.判断请求用户已有的地址数量
+        # 一个人最多添加20个地址
+        # 最开始先判断当前请求的用户的地址是否多余20个,如果大于等于20,直接返回响应
+        # todo 获取当前用户的地址的数量
+        # ①直接获取: count = Address.objects.filter(user=request.user).count()
+        # ②通过关联模型的方式获取:
+        count = request.user.addresses.all().count()
+        if count >= 20:
+            return http.JsonResponse({'code': RETCODE.THROTTLINGERR, 'errmsg': '用户地址数量超限'})
+
+        # 1.接收数据 --- 收件人,地址,省,市,区.....
+        json_dict = json.loads(request.body.decode())
+        receiver = json_dict.get('receiver')
+        province_id = json_dict.get('province_id')
+        city_id = json_dict.get('city_id')
+        district_id = json_dict.get('district_id')
+        place = json_dict.get('place')
+        mobile = json_dict.get('mobile')
+        tel = json_dict.get('tel')
+        email = json_dict.get('email')
+
+        # 2.检验数据 --- 验证邮箱,固定电话,手机号等
+        if not all([receiver, province_id, city_id, district_id, place, mobile]):
+            return http.HttpResponseBadRequest('缺少必传参数')
+        if not re.match(r'^1[3-9]\d{9}$', mobile):
+            return http.HttpResponseBadRequest('参数mobile有误')
+        if tel:
+            if not re.match(r'^(0[0-9]{2,3}-)?([2-9][0-9]{6,7})+(-[0-9]{1,4})?$', tel):
+                return http.HttpResponseBadRequest('参数tel有误')
+        if email:
+            if not re.match(r'^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$', email):
+                return http.HttpResponseBadRequest('参数email有误')
+
+        # 3.数据入库
+        try:
+            address = Address.objects.create(
+                user=request.user,
+                title=receiver,
+                receiver=receiver,
+                province_id=province_id,
+                city_id=city_id,
+                district_id=district_id,
+                place=place,
+                mobile=mobile,
+                tel=tel,
+                email=email
+            )
+        except Exception as e:
+            logger.error(e)
+
+        # todo 如果当前请求的用户没有默认地址,就给它设置一个默认地址
+        if not request.user.default_address:
+            request.user.default_address = address
+            request.user.save()
+
+        # 4.返回响应 --- 返回json数据
+        address_dict = {
+            "id": address.id,
+            "title": address.title,
+            "receiver": address.receiver,
+            "province": address.province.name,
+            "city": address.city.name,
+            "district": address.district.name,
+            "place": address.place,
+            "mobile": address.mobile,
+            "tel": address.tel,
+            "email": address.email
+
+        }
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'address': address_dict})
 
 
 
