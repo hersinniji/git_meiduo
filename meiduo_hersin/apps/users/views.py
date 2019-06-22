@@ -454,13 +454,49 @@ class EmailActiveView(View):
     post     addresses/
 """
 
+# 用户中心收货地址管理(新增地址)思路
+"""
+详细思路:
+    1.根据请求的条件查询/展示信息
+    2.需要我们将对象列表转换为字典列表
+    3.返回响应
+"""
+
 
 # 用户中心收货地址管理
 class AddressView(View):
 
     def get(self, request):
 
-        return render(request, 'user_center_site.html')
+        # 1.根据请求的条件查询 / 展示信息
+        # todo 这里注意在过滤时加上 is_deleted,因为逻辑删除的记录不应该筛选出来
+        addresses = Address.objects.filter(user=request.user, is_deleted=False)
+
+        # 2.需要我们将对象列表转换为字典列表
+        address_list = []
+        for address in addresses:
+            address_list.append({
+                "id": address.id,
+                "title": address.title,
+                "receiver": address.receiver,
+                "province": address.province.name,
+                "province_id":address.province_id,
+                "city": address.city.name,
+                "city_id":address.city_id,
+                "district": address.district.name,
+                "district_id":address.district_id,
+                "place": address.place,
+                "mobile": address.mobile,
+                "tel": address.tel,
+                "email": address.email,
+            })
+
+        # 3.返回响应
+        context = {
+            'addresses': address_list,
+            'default_address_id': request.user.default_address_id
+        }
+        return render(request, 'user_center_site.html', context)
 
     # 接收用户提交的新增收货地址信息,用点击新增按钮,触发save_addresss函数,发送的是ajax请求
     # 这里可以设置ajax请求的请求方式为post,配合前端js文件.

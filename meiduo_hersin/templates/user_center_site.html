@@ -8,6 +8,11 @@
     <script type="text/javascript" src="../static/js/host.js"></script>
 	<script type="text/javascript" src="../static/js/vue-2.5.16.js"></script>
     <script type="text/javascript" src="../static/js/axios-0.18.0.min.js"></script>
+    <!-- 将后端模板数据传递到Vue.js -->
+    <script type="text/javascript">
+    let addresses = {{ addresses | safe }};
+    let default_address_id = "{{ default_address_id }}";
+</script>
 </head>
 <body>
 	<div id="app" v-cloak>
@@ -52,6 +57,8 @@
 	</div>
 
 	<div class="main_con clearfix">
+
+
 		<div class="left_menu_con clearfix">
 			<h3>用户中心</h3>
 			<ul>
@@ -61,52 +68,37 @@
 				<li><a href="../static/user_center_pass.html">· 修改密码</a></li>
 			</ul>
 		</div>
-		<div class="right_content clearfix">
-			<div class="site_top_con">
-{#                这里为点击新增收货地址触发事件#}
-				<a href="javascript:;" @click="show_add_site">新增收货地址</a>
-				<span>你已创建了<b>2</b>个收货地址，最多可创建<b>20</b>个</span>
-			</div>
-			<div class="site_con">
-				<div class="site_title">
-					<h3>张大山A 北京</h3>
-					<a href="javascript:;" class="edit_icon"></a>
-					<em>默认地址</em>
-					<span class="del_site">×</span>
-				</div>
-				<ul class="site_list">
-					<li><span>收货人：</span><b>张大山</b></li>
-					<li><span>所在地区：</span><b>北京昌平区六环内</b></li>
-					<li><span>地址：</span><b>昌平区天通苑北二区36栋</b></li>
-					<li><span>手机：</span><b>188****0001</b></li>
-					<li><span>固定电话：</span><b>78912345</b></li>
-					<li><span>电子邮箱：</span><b>dashan@126.com</b></li>
-				</ul>
-				<div class="down_btn">
-					<a href="javascript:;"  class="edit_icon">编辑</a>
-				</div>
-			</div>
 
-			<div class="site_con">
-				<div class="site_title">
-					<h3>张大山 北京</h3>
-					<a href="javascript:;" class="edit_icon"></a>
-					<span class="del_site">×</span>
-				</div>
-				<ul class="site_list">
-					<li><span>收货人：</span><b>张大山</b></li>
-					<li><span>所在地区：</span><b>北京昌平区六环内</b></li>
-					<li><span>地址：</span><b>昌平区天通苑北二区36栋</b></li>
-					<li><span>手机：</span><b>188****003</b></li>
-					<li><span>固定电话：</span><b>78912345</b></li>
-					<li><span>电子邮箱：</span><b>dashan@126.com</b></li>
-				</ul>
-				<div class="down_btn">
-					<a href="javascript:;" class="set_default">设为默认</a>
-					<a href="javascript:;" class="edit_icon">编辑</a>
-				</div>
-			</div>
-		</div>
+
+		<div class="right_content clearfix" v-cloak>
+            <div class="site_top_con">
+                {#                这里为点击新增收货地址触发事件#}
+                <a @click="show_add_site">新增收货地址</a>
+                <span>你已创建了<b>[[ addresses.length ]]</b>个收货地址，最多可创建<b>20</b>个</span>
+            </div>
+            <div class="site_con" v-for="(address, index) in addresses">
+                <div class="site_title">
+                    <h3>[[ address.title ]]</h3>
+                    <a href="javascript:;" class="edit_icon"></a>
+                    <em v-if="address.id===default_address_id">默认地址</em>
+                    <span class="del_site">×</span>
+                </div>
+                <ul class="site_list">
+                    <li><span>收货人：</span><b>[[ address.receiver ]]</b></li>
+                    <li><span>所在地区：</span><b>[[ address.province ]] [[address.city]] [[ address.district ]]</b></li>
+                    <li><span>地址：</span><b>[[ address.place ]]</b></li>
+                    <li><span>手机：</span><b>[[ address.mobile ]]</b></li>
+                    <li><span>固定电话：</span><b>[[ address.tel ]]</b></li>
+                    <li><span>电子邮箱：</span><b>[[ address.email ]]</b></li>
+                </ul>
+                <div class="down_btn">
+                    <a v-if="address.id!=default_address_id">设为默认</a>
+                    <a href="javascript:;" class="edit_icon">编辑</a>
+                </div>
+            </div>
+        </div>
+
+
 	</div>
 	<div class="footer">
 		<div class="foot_link">

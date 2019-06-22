@@ -42,9 +42,9 @@ var vm = new Vue({
         // 获取省份数据
         this.get_provinces();
         // 将用户地址列表绑定到变量, addresses 是django模板传给vue的json字符串
-        // this.addresses = JSON.parse(JSON.stringify(addresses));
+        this.addresses = JSON.parse(JSON.stringify(addresses));
         // 默认地址id
-        // this.default_address_id = default_address_id;
+        this.default_address_id = default_address_id;
     },
     watch: {
         // 监听到省份id变化
