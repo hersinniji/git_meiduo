@@ -241,3 +241,18 @@ EMAIL_HOST_USER = 'qi_rui_hua@163.com'
 EMAIL_HOST_PASSWORD = '123456abc'
 # 收件人看到的发件人
 EMAIL_FROM = '美多商城<qi_rui_hua@163.com>'
+
+
+"""
+首页图片数据展示时
+image = models.ImageField(null=True, blank=True, verbose_name='图片')
+里面的ImageField方法不满足要求
+自定义完成了存储类之后,告诉系统,使用我们自己定义的存储类
+"""
+
+# 指定自定义的Django文件存储类
+DEFAULT_FILE_STORAGE = 'utils.fdfs.faststorage.MyStorage'
+
+# # FastDFS相关参数
+# # FDFS_BASE_URL = 'http://192.168.103.158:8888/'
+# FDFS_BASE_URL = 'http://image.meiduo.site:8888/'

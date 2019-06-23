@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="33023929-96ec-40d0-b020-348c5bb0b96f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/utils/fdfs/faststorage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/meiduo_hersin/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/meiduo_hersin/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,24 +40,39 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/goods_data.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="379" lean-forward="true" selection-start-line="379" selection-end-line="379" />
+            <state relative-caret-position="70">
+              <caret line="360" column="21" lean-forward="true" selection-start-line="360" selection-start-column="21" selection-end-line="360" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="91">
+              <caret line="286" column="63" lean-forward="true" selection-start-line="286" selection-start-column="63" selection-end-line="286" selection-end-column="63" />
+              <folding>
+                <element signature="e#4690#4694#0#HTML" expanded="true" />
+                <element signature="e#5190#5194#0#HTML" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/index.html">
+        <entry file="file://$PROJECT_DIR$/meiduo_hersin/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130">
-              <caret line="105" column="40" selection-start-line="105" selection-start-column="40" selection-end-line="105" selection-end-column="40" />
-              <folding>
-                <element signature="e#4690#4694#0#HTML" expanded="true" />
-                <element signature="e#5190#5194#0#HTML" expanded="true" />
-                <element signature="n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" />
-                <element signature="n#div#5;n#div#0;n#body#0;n#html#0;n#!!top" />
-                <element signature="n#div#6;n#div#0;n#body#0;n#html#0;n#!!top" />
-              </folding>
+            <state relative-caret-position="386">
+              <caret line="258" lean-forward="true" selection-start-line="258" selection-end-line="258" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/utils/fdfs/faststorage.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="27" column="12" lean-forward="true" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -71,11 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/contents/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="32" column="9" lean-forward="true" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+            <state relative-caret-position="200">
+              <caret line="30" column="37" lean-forward="true" selection-start-line="30" selection-start-column="37" selection-end-line="30" selection-end-column="37" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -93,12 +111,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/apps/contents/urls.py">
+        <entry file="file://$PROJECT_DIR$/apps/contents/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="80">
-              <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+            <state relative-caret-position="366">
+              <caret line="34" column="22" lean-forward="true" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
               <folding>
-                <element signature="e#0#32#0" expanded="true" />
+                <element signature="e#0#28#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -139,7 +157,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/libs/yuntongxun/CCPRestSDK.py" />
         <option value="$PROJECT_DIR$/templates/register.html" />
         <option value="$PROJECT_DIR$/static/js/register.js" />
         <option value="$PROJECT_DIR$/utils/response_code.py" />
@@ -183,13 +200,14 @@
         <option value="$PROJECT_DIR$/templates/user_center_site.html" />
         <option value="$PROJECT_DIR$/utils/fdfs/client.conf" />
         <option value="$PROJECT_DIR$/apps/contents/apps.py" />
-        <option value="$PROJECT_DIR$/meiduo_hersin/settings.py" />
         <option value="$PROJECT_DIR$/apps/goods/apps.py" />
         <option value="$PROJECT_DIR$/data/text.sh" />
         <option value="$PROJECT_DIR$/data/import_data.sh" />
         <option value="$PROJECT_DIR$/apps/contents/utils.py" />
-        <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/apps/contents/views.py" />
+        <option value="$PROJECT_DIR$/meiduo_hersin/settings.py" />
+        <option value="$PROJECT_DIR$/utils/fdfs/faststorage.py" />
+        <option value="$PROJECT_DIR$/templates/index.html" />
       </list>
     </option>
   </component>
@@ -227,12 +245,18 @@
             <path>
               <item name="meiduo_hersin" type="b2602c69:ProjectViewProjectNode" />
               <item name="meiduo_hersin" type="462c0819:PsiDirectoryNode" />
-              <item name="meiduo_hersin" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="meiduo_hersin" type="b2602c69:ProjectViewProjectNode" />
               <item name="meiduo_hersin" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="meiduo_hersin" type="b2602c69:ProjectViewProjectNode" />
+              <item name="meiduo_hersin" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="fdfs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -436,7 +460,7 @@
       <workItem from="1561089528072" duration="25483000" />
       <workItem from="1561171790023" duration="22220000" />
       <workItem from="1561270740178" duration="4796000" />
-      <workItem from="1561280272384" duration="4381000" />
+      <workItem from="1561280272384" duration="9051000" />
     </task>
     <task id="LOCAL-00001" summary="登录界面的前端展示">
       <created>1560588933719</created>
@@ -725,23 +749,30 @@
       <option name="project" value="LOCAL" />
       <updated>1561284928093</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="首页数据的展示">
+      <created>1561285052833</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1561285052833</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="267513000" />
+    <option name="totallyTimeSpent" value="272183000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1375" height="790" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20351951" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13771997" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Console" order="0" weight="0.32903227" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4989858" visible="true" weight="0.2822086" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4989858" visible="true" weight="0.10429448" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.43251532" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
@@ -759,14 +790,14 @@
       <window_info anchor="right" id="Database" order="4" weight="0.32842287" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20351951" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13771997" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Console" order="0" weight="0.32903227" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4989858" weight="0.21276596" />
-      <window_info anchor="bottom" id="Debug" order="4" weight="0.19432624" />
+      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4989858" weight="0.2822086" />
+      <window_info anchor="bottom" id="Debug" order="4" weight="0.43251532" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" />
@@ -774,7 +805,7 @@
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5010142" side_tool="true" weight="0.31009957" />
-      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.4989858" visible="true" weight="0.40030676" />
+      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.4989858" weight="0.40030676" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -831,6 +862,11 @@
           <line>87</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="jinja2-line">
+          <url>file://$PROJECT_DIR$/templates/index.html</url>
+          <line>272</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -850,7 +886,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/meiduo_hersin$models.coverage" NAME="models Coverage Results" MODIFIED="1560255202313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/apps/users" />
     <SUITE FILE_PATH="coverage/meiduo_hersin$sms.coverage" NAME="sms Coverage Results" MODIFIED="1560496748205" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/libs/yuntongxun" />
-    <SUITE FILE_PATH="coverage/meiduo_hersin$manage.coverage" NAME="manage Coverage Results" MODIFIED="1561284145504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/meiduo_hersin$manage.coverage" NAME="manage Coverage Results" MODIFIED="1561292893397" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/meiduo_hersin$celery_class.coverage" NAME="celery_class Coverage Results" MODIFIED="1560515848186" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/celery_tasks" />
   </component>
   <component name="debuggerHistoryManager">
@@ -898,47 +934,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/apps/oauth/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="7" column="1" lean-forward="true" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/celery_tasks/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="23" selection-start-line="6" selection-start-column="23" selection-end-line="6" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/celery_tasks/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/libs/yuntongxun/sms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="89">
-          <caret line="69" column="25" lean-forward="true" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/celery_tasks/sms/tasks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="18" column="8" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
-          <folding>
-            <element signature="e#111#146#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/oauth/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
@@ -1187,16 +1182,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/contents/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/goods/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2860">
@@ -1238,13 +1223,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/goods_data.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="379" lean-forward="true" selection-start-line="379" selection-end-line="379" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/contents/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
@@ -1255,13 +1233,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/meiduo_hersin/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="44" column="34" lean-forward="true" selection-start-line="44" selection-start-column="34" selection-end-line="44" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/meiduo_hersin/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -1269,17 +1240,37 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/index.html">
+    <entry file="file://$USER_HOME$/.virtualenvs/hersin_django_vir1/lib/python3.5/site-packages/django/db/models/fields/files.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="105" column="40" selection-start-line="105" selection-start-column="40" selection-end-line="105" selection-end-column="40" />
+        <state relative-caret-position="351">
+          <caret line="384" column="48" lean-forward="true" selection-start-line="384" selection-start-column="48" selection-end-line="384" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.virtualenvs/hersin_django_vir1/lib/python3.5/site-packages/django/core/files/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/.virtualenvs/hersin_django_vir1/lib/python3.5/site-packages/django/contrib/staticfiles/storage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="485" column="6" selection-start-line="485" selection-start-column="6" selection-end-line="485" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.virtualenvs/hersin_django_vir1/lib/python3.5/site-packages/django/core/files/storage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-149">
+          <caret line="248" column="28" selection-start-line="248" selection-start-column="28" selection-end-line="248" selection-end-column="28" />
           <folding>
-            <element signature="e#4690#4694#0#HTML" expanded="true" />
-            <element signature="e#5190#5194#0#HTML" expanded="true" />
-            <element signature="n#div#4;n#div#0;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#div#5;n#div#0;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#div#6;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="e#0#12#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/goods_data.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="70">
+          <caret line="360" column="21" lean-forward="true" selection-start-line="360" selection-start-column="21" selection-end-line="360" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -1293,12 +1284,47 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/meiduo_hersin/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="386">
+          <caret line="258" lean-forward="true" selection-start-line="258" selection-end-line="258" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/fdfs/faststorage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="27" column="12" lean-forward="true" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/apps/contents/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="32" column="9" lean-forward="true" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+        <state relative-caret-position="200">
+          <caret line="30" column="37" lean-forward="true" selection-start-line="30" selection-start-column="37" selection-end-line="30" selection-end-column="37" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/contents/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="34" column="22" lean-forward="true" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="286" column="63" lean-forward="true" selection-start-line="286" selection-start-column="63" selection-end-line="286" selection-end-column="63" />
+          <folding>
+            <element signature="e#4690#4694#0#HTML" expanded="true" />
+            <element signature="e#5190#5194#0#HTML" expanded="true" />
           </folding>
         </state>
       </provider>
