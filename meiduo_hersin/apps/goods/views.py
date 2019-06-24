@@ -3,7 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.views import View
 
-from apps.goods.models import SKU
+from apps.goods.models import SKU, GoodsCategory
+from apps.goods.utils import get_breadcrumb
 
 """
 一个页面的需求分析,先从大的方向把整体流程搞清楚
@@ -30,11 +31,35 @@ from apps.goods.models import SKU
     get     /list/(?P<category_id>\d+)/(?P<page_num>\d+)/?sort=排序方式
 """
 
+import logging
+logger = logging.getLogger('django')
+
 
 # 商品列表页
 class ListView(View):
 
     def get(self, request, category_id, page_num):
+
+        """
+        我们需要根据当前的分类id,来获取它的上级/下级信息
+
+        """
+        # 一.面包屑实现
+
+        try:
+            # 1.获取当前的分类id,并得到分类对象
+            category = GoodsCategory.objects.get(id=category_id)
+        except Exception as e:
+            logger.error(e)
+            return render(request, 'list.html', context={'errmsg': '没有此分类'})
+
+        # 2.获取它的上级/下级
+        # 如果是一级  一个信息
+        # 如果是二级  两个信息
+        # 如果是三级  三个信息
+        breadcrumb = get_breadcrumb(category)
+
+        # 二.列表数据
 
         # 1.如果有排序字段再进行排序
         sort = request.GET.get('sort')
@@ -54,20 +79,25 @@ class ListView(View):
 
         # 3.如果有分页字段再分页
         try:
-            page_num = page_num
+            page_num = int(page_num)
         except:
             page_num = 1
 
         # 3.1导入分页类
         from django.core.paginator import Paginator
-        # 3.2创建分页实例对象
-        paginator = Paginator(skus, 5)
-        # 3.3获取分页数据
-        page_skus = paginator.page(page_num)
-        # 总分页
-        total_page = paginator.num_pages
+        try:
+            # 3.2创建分页实例对象
+            paginator = Paginator(skus, 5)
+            # 3.3获取分页数据
+            page_skus = paginator.page(page_num)
+            # 总分页
+            total_page = paginator.num_pages
+        except Exception as e:
+            pass
 
         context = {
+            'category': category,
+            'breadcrumb': breadcrumb,
             'sort': sort,  # 排序字段
             'page_skus': page_skus,  # 分页后数据
             'total_page': total_page,  # 总页数
