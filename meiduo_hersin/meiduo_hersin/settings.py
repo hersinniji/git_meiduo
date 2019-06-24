@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.goods.apps.GoodsConfig',
     'apps.users.apps.UsersConfig',  # 因为我们的子应用已经放到apps的包中,所以要添加apps.xxx
     'django.contrib.staticfiles',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -256,3 +257,13 @@ DEFAULT_FILE_STORAGE = 'utils.fdfs.faststorage.MyStorage'
 # # FastDFS相关参数
 # # FDFS_BASE_URL = 'http://192.168.103.158:8888/'
 # FDFS_BASE_URL = 'http://image.meiduo.site:8888/'
+
+
+# Haystack 搜索引擎相关
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://172.16.62.129:9200/',  # Elasticsearch服务器ip地址，端口号固定为9200
+        'INDEX_NAME': 'haystack',  # Elasticsearch建立的索引库的名称
+    },
+}

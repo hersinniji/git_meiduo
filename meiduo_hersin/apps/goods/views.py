@@ -105,3 +105,11 @@ class ListView(View):
         }
 
         return render(request, 'list.html', context)
+
+
+# 1.我们的搜索不使用like,因为like 查询效率低,多个字段进行查询时不方便
+# 2.我们搜索使用全文搜索
+# 3.全文搜索需要使用搜索引擎
+# 4.我们的搜索引擎使用 elasticsearch
+
+# 使用 elasticsearch 实现全文检索

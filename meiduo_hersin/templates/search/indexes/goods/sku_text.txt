@@ -1,0 +1,6 @@
+在这里我们指定　对模型的哪些字段进行检索
+object　可以理解为 SKU 的实例对象
+
+{{ object.name }}
+{{ object.caption }}
+{{ object.id }}
