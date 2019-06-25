@@ -133,7 +133,7 @@ var vm = new Vue({
         detail_visit(){
             if (this.category_id) {
                 var url = this.hots + '/detail/visit/' + this.category_id + '/';
-                axios.post(url, {}, {
+                axios.get(url, {}, {
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken')
                     },

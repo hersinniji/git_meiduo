@@ -20,8 +20,30 @@ var vm = new Vue({
         this.get_hot_goods();
 
         this.username = getCookie('username');
+
+        // 这里在列表页面也可以进行分类商品访问量的统计和展示
+        // this.detail_visit();
     },
     methods: {
+        // 记录分类商品访问量
+        detail_visit(){
+            if (this.category_id) {
+                var url = this.hots + '/detail/visit/' + this.category_id + '/';
+                axios.get(url, {}, {
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    responseType: 'json'
+                })
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.log(error.response);
+                    });
+            }
+        },
+
         // 获取购物车数据
         get_carts(){
             var url = this.host + '/carts/simple/';

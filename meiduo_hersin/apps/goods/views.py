@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.views import View
 
 from apps.contents.utils import get_categories
-from apps.goods.models import SKU, GoodsCategory
+from apps.goods.models import SKU, GoodsCategory, GoodsVisitCount
 from apps.goods.utils import get_breadcrumb
 from utils.response_code import RETCODE
 
@@ -177,6 +177,7 @@ class HotView(View):
 """
 
 
+# 商品详情页面
 class DetailView(View):
 
     def get(self, request, sku_id):
@@ -237,3 +238,65 @@ class DetailView(View):
             'specs': goods_specs,
         }
         return render(request, 'detail.html', context)
+
+
+"""
+分类商品访问量的统计
+
+1. 
+    前端: 当用户在列表页面/商品详情页面的时候,我们需要给后台发送一个 统计访问量的ajax请求
+        这个请求包含分类id 就行
+    后端: 接收这个分类id,对它的统计个数+1
+2. 
+    后端需要根据id, 查询分类中的访问量信息
+    再将当天的统计个数 +1
+3.
+    ① 获取分类id
+    ② 根据分类id查询分类,判断分类是否存在
+    ③ 我们以天为单位进行查询统计
+        如果当前没有统计数据,则新增统计数据
+        如果当前有统计数据,则更新统计数据,对访问量count进行+1
+    ④ 返回响应
+4. 
+    GET    /detail/visit/(?P<category_id>\d+)/
+
+"""
+
+
+class VisitCategoryView(View):
+
+    def get(self, request, category_id):
+
+        # ① 获取分类id
+        # ② 根据分类id查询分类, 判断分类是否存在
+        try:
+            category = GoodsCategory.objects.get(id=category_id)
+        except Exception as e:
+            logger.error(e)
+            return render(request, '404.html')
+
+        # 我们需要查询当天的分类id的记录
+        # yy-mm-dd
+        # from datetime import datetime
+        # now = datetime.now()
+        # today_date = datetime.strptime(now, '%Y-%m%-%d')
+        from django.utils import timezone
+        today = timezone.localdate()
+
+        # ③ 以天为单位,判断当前的商品分类有没有统计数据,并进行相应操作
+        try:
+            gvc = GoodsVisitCount.objects.get(date=today, category_id=category_id)
+        except GoodsVisitCount.DoesNotExist:
+            # 我们以天为单位,如果当前没有统计数据, 则新增统计数据
+            GoodsVisitCount.objects.create(
+                date=today,
+                count=1,
+                category_id=category_id
+            )
+        else:
+            # 如果当天有统计数据, 则应该更新统计数据, 对访问量count进行 + 1
+            gvc.count += 1
+            gvc.save()
+
+        # ④ 返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK', })
