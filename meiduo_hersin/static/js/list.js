@@ -10,6 +10,8 @@ var vm = new Vue({
         category_id: category_id,
         username: '',
     },
+
+    // 这里的mounted即当当用户看到html界面后再发送异步的ajax请求,获取热销的信息
     mounted(){
         // 获取购物车数据
         this.get_carts();

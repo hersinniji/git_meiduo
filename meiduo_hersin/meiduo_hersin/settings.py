@@ -255,7 +255,7 @@ image = models.ImageField(null=True, blank=True, verbose_name='图片')
 DEFAULT_FILE_STORAGE = 'utils.fdfs.faststorage.MyStorage'
 
 # # FastDFS相关参数
-# # FDFS_BASE_URL = 'http://192.168.103.158:8888/'
+# # FDFS_BASE_URL = 'http://172.16.62.129:8888/'
 # FDFS_BASE_URL = 'http://image.meiduo.site:8888/'
 
 

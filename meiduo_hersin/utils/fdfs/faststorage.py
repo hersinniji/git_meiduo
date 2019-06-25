@@ -34,7 +34,7 @@ class MyStorage(Storage):
         # name 其实就是 file_id ,即 group1/M00/00/00/wKjlhFsTgJ2AJvG_AAAyZgOTZN0850.jpg
         # 文件索引（file_id）是客户端上传文件后Storage返回给客户端的一个字符串，是以后访问该文件的索引信息。
         # 文件索引（file_id）信息包括：组名、虚拟磁盘路径、数据两级目录、文件名等信息。
-        return 'http://172.16.62.135:8888/' + name
+        return 'http://172.16.62.129:8888/' + name
 
 
 # storage = MyStorage()

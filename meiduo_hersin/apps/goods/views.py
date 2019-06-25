@@ -1,3 +1,4 @@
+from django import http
 from django.shortcuts import render
 
 # Create your views here.
@@ -5,6 +6,7 @@ from django.views import View
 
 from apps.goods.models import SKU, GoodsCategory
 from apps.goods.utils import get_breadcrumb
+from utils.response_code import RETCODE
 
 """
 一个页面的需求分析,先从大的方向把整体流程搞清楚
@@ -113,3 +115,58 @@ class ListView(View):
 # 4.我们的搜索引擎使用 elasticsearch
 
 # 使用 elasticsearch 实现全文检索
+
+
+# 热销商品的展示思路
+"""
+一 把需求写下来 (前端需要收集什么 后端需要做什么)
+
+    前端: 前端发送ajax异步请求,需要把分类id传递给后端
+    后端: 根据分类id(商品分类ID，第三级分类)查询数据,并把数据返回给前端
+
+二 把大体思路写下来(后端的大体思路)
+    1.获取分类id
+    2.查询是否有当前分类
+    3.根据分类去查询指定的数据,并进行排序,排序之后获取n条
+    4.ajax 把对象列表转换为字典列表
+三 把详细思路完善一下(纯后端)
+    1.通过分类id查询商品分类对象
+    2.根据分类去查询指定的数据,并进行排序,排序之后获取n条
+    3.ajax 把对象列表转换为字典列表
+四 确定我们请求方式和路由
+    GET     hot/?cat=xxxx
+            hot/cat_id/
+"""
+
+
+# todo 重要流程: 用户访问list列表页,展示列表页内容,同时已经获取到了分类id,并且当用户看到列表页的HTML页面时
+# 发送异步ajax请求,刷新热销部分的信息.热销ajax请求路径中有分类id,可直接使用es6语法,在渲染商品list列表页面时
+# 通过模板把category_id值传给vue,这时,热销信息的ajax请求路径中可以使用分类id
+class HotView(View):
+
+    def get(self, request, category_id):
+
+        # 通过分类id查询商品分类对象,,此处进行异常捕获
+        try:
+            category = GoodsCategory.objects.get(id=category_id)
+        except Exception as e:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'errmsg': '暂无此分类'})
+
+        # 3.根据分类去查询指定的数据集(对象列表),并进行排序, 排序之后获取n条
+        try:
+            skus = SKU.objects.filter(category=category, is_launched=True).order_by('-sales')[0:2]
+        except Exception as e:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'errmsg': '此分类暂无数据'})
+
+        # 4.ajax把对象列表转换为字典列表
+        skus_list = []
+        for sku in skus:
+            skus_list.append({
+                'id': sku.id,
+                'default_image_url': sku.default_image.url,
+                'name': sku.name,
+                'price': sku.price
+            })
+
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'hot_skus': skus_list})
+
