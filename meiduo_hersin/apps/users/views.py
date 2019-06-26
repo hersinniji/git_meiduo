@@ -7,6 +7,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 # Create your views here.
+from django_redis import get_redis_connection
+
+from apps.goods.models import SKU
 from apps.users.models import User, Address
 import logging
 # 创建logger实例,并取个名字叫'Django'
@@ -283,6 +286,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 # 定义用户中心的视图
 class UserCenterInfoView(LoginRequiredMixin, View):
+
     def get(self, request):
 
         content = {
@@ -716,7 +720,80 @@ class AddressUpdateView(View):
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
 
 
+"""
+用户浏览记录的需求:
+一.因为浏览记录是在用户中心页面展示的,我们只记录登录用户的浏览记录
+二.当用户浏览某一个具体的商品的时候,我们需要将该记录添加到一个表中
+    
+    1.需求
+        前端收集商品id和用户信息,而且是发送ajax请求
+        后端是要保存数据
+    2.思路
+        接收数据
+        验证数据
+        保存数据
+        返回响应
+    3.详细思路(纯后端)
+        1.接收数据  用户信息.商品id
+        2.验证数据
+        3.保存数据(后台mysql/redis中)
+            在redis中以列表形式保存
+            3.1 链接redis
+            3.2 先删除有可能存在的这个商品的id
+            3.3 再添加商品的id
+            3.4 因为最近浏览里面没有分页功能,我们只能保存5条历史记录
+        4.返回响应
+    4. 确定请求方式和路由
+        POST  
+三.获取用户浏览记录的时候需要有一个展示顺序
+    根据用户id,获取redis中的指定数据
+    [1, 2, 3, 4]根据商品id,查询商品详细信息
+    [SKU, SKU, SKU]对象转换为字典
+    返回响应
+        
+"""
 
+
+class UserBrowseHistoryView(LoginRequiredJSONMixin, View):
+
+    def post(self, request):
+        """保存用户浏览记录"""
+
+        # 1.接收数据
+        json_dict = json.loads(request.body.decode())
+        sku_id = json_dict.get('sku_id')
+
+        # 2.校验数据(判断是否有此sku_id对应的商品)
+        try:
+            # 这里也可以写成pk,primary key 主键
+            # SKU.objects.get(pk=sku_id)
+            SKU.objects.get(id=sku_id)
+        except Exception as e:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'errmsg': '商品不存在'})
+
+        # 3.存储数据
+        # 3.1链接redis数据库
+        redis_conn = get_redis_connection('history')
+        # 3.2使用管道一次操作
+        pl = redis_conn.pipeline()
+
+        user_id = request.user.id
+
+        # 先去重,删除历史记录里面同样的记录
+        # count=0,移除表中所有值与value相等的值
+        pl.lrem('history_%s' % user_id, 0, sku_id)
+        # 再存储,从列表前面进行添加
+        pl.lpush('history_%s' % user_id, sku_id)
+        # 最后截取,截取history库里面的5条记录
+        # 对一个列表进行修剪,也就是让列表只保留指定区间内的元素,不在指定区间内的元素都会被删除
+        # 例如:执行ltrim list 0 2 ,表示只保留列表list的前三个元素,其余元素全部删除
+        pl.ltrim('history_%s' % user_id, 0, 4)
+        # 执行管道
+        pl.execute()
+
+        # 4.返回响应
+
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
 
 
 

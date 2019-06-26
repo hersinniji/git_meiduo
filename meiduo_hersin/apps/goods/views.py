@@ -1,13 +1,17 @@
+import json
+
 from django import http
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
+from django_redis import get_redis_connection
 
 from apps.contents.utils import get_categories
 from apps.goods.models import SKU, GoodsCategory, GoodsVisitCount
 from apps.goods.utils import get_breadcrumb
 from utils.response_code import RETCODE
+from utils.views import LoginRequiredJSONMixin
 
 """
 一个页面的需求分析,先从大的方向把整体流程搞清楚
@@ -300,3 +304,33 @@ class VisitCategoryView(View):
 
         # ④ 返回响应
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK', })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
