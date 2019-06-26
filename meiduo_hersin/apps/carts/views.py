@@ -143,10 +143,34 @@ class CartView(View):
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
         else:
             # 5.非登录用户cookie里面
-            # 5.1 组织数据
-            carts = {
-                sku_id: {'count': count, 'selected': True},
+
+            # # 5.1 组织数据
+            # carts = {
+            #     sku_id: {'count': count, 'selected': True},
+            # }
+
+            # 这里需要进行判断, 先判断cookie里面的carts是否存在
+            cookie_str = request.COOKIES.get('carts')
+
+            if cookie_str is None:
+                # 如果不存在,则进行增加
+                # 如果cookie数据不存在,先初始化一个 空的carts
+                carts = {}
+            else:
+                # 如果存在.对数据进行解码,并更新count数据
+                # 对数据进行base64解码
+                de = base64.b64decode(cookie_str)
+                # 再将bytes类型的数据转换为字典
+                carts = pickle.loads(de)
+
+            if sku_id in carts:
+                origin_count = carts[sku_id]['count']
+                count = count + origin_count
+            carts[sku_id] = {
+                'count': count,
+                'selected': True
             }
+
             # 5.2 加密
             # 将数据转换为bytes类型
             a = pickle.dumps(carts)
