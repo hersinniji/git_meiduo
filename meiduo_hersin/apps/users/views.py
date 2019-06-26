@@ -756,6 +756,32 @@ class AddressUpdateView(View):
 
 class UserBrowseHistoryView(LoginRequiredJSONMixin, View):
 
+    def get(self, request):
+
+        # 1.获取用户id
+        user_id = request.user.id
+
+        # 2.链接redis数据库
+        redis_conn = get_redis_connection('history')
+
+        # 3.根据用户id在数据库中获取响应的商品id
+        ids = redis_conn.lrange('history_%s' % user_id, 0, 4)
+
+        # 4.根据商品id获取商品对象
+        # 5.将商品信息的对象列表转换为字典列表
+        sku_list = []
+        for id in ids:
+            sku = SKU.objects.get(id=id)
+            sku_list.append({
+                'id': sku.id,
+                'name': sku.name,
+                'default_image_url': sku.default_image.url,
+                'price': sku.price
+            })
+
+        # 6.返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK', 'skus': sku_list})
+
     def post(self, request):
         """保存用户浏览记录"""
 
@@ -786,7 +812,7 @@ class UserBrowseHistoryView(LoginRequiredJSONMixin, View):
         pl.lpush('history_%s' % user_id, sku_id)
         # 最后截取,截取history库里面的5条记录
         # 对一个列表进行修剪,也就是让列表只保留指定区间内的元素,不在指定区间内的元素都会被删除
-        # 例如:执行ltrim list 0 2 ,表示只保留列表list的前三个元素,其余元素全部删除
+        # todo 例如:执行ltrim list 0 2 ,表示只保留列表list的前三个元素,其余元素全部删除
         pl.ltrim('history_%s' % user_id, 0, 4)
         # 执行管道
         pl.execute()
