@@ -149,7 +149,10 @@ class CartView(View):
             # 4.2存储(hash, set)
             # HSET key field value
             # 将哈希表key中的域field的值设为value 。
-            pl.hset('carts_%s' % request.user.id, sku_id, count)
+            # pl.hset('carts_%s' % request.user.id, sku_id, count)
+            # todo 这里需要注意.如果这样写的话,再次往购物车加之前加过得商品.不会累计数量,只会覆盖原有数量
+            # 所以不满足要求,这里可以使用哈希类型自带的hincrby(),实现在原有基础上,进行加本次的数据操作
+            pl.hincrby('carts_%s' % request.user.id, sku_id, count)
             # SADD key member[member...]
             # 将一个或多个member元素加入到集合key当中，已经存在于集合的member元素将被忽略。
             pl.sadd('selected_%s' % request.user.id, sku_id)
@@ -248,12 +251,11 @@ class CartView(View):
         if user.is_authenticated:
             # 链接redis
             redis_conn = get_redis_connection('carts')
-            pl = redis_conn.pipeline()
             # hash哈希类型  user_id  {sku_id:count}
-            sku_id_count = pl.hgetall('carts_%s' % user.id)
+            sku_id_count = redis_conn.hgetall('carts_%s' % user.id)
             # set无序集合   被勾选商品的id [sku_id]
-            selected_ids = pl.smembers('selected_%s' % user.id)
-            pl.execute()
+            selected_ids = redis_conn.smembers('selected_%s' % user.id)
+
             # 为了后面统一获取sku_id时都是从一个数据类型中获取的,这里将登录后信息也转为一个字典
             # 将redis的数据统一为cookie的格式 或者
             # 将cookie的数据统一为redis的格式
@@ -264,7 +266,8 @@ class CartView(View):
                     selected = True
                 else:
                     selected = False
-                carts[sku_id] = {
+                # todo 注意redis的数据类型都是bytes类型,因此这里需要进行转换,转为int类型
+                carts[int(sku_id)] = {
                     'selected': selected,
                     'count': int(count)
                 }
@@ -295,7 +298,8 @@ class CartView(View):
             sku_list.append({
                 'id': sku.id,
                 'name': sku.name,
-                'count': carts.get(sku.id)['count'],
+                # todo 注意redis的数据类型都是bytes类型,因此上面不转换的话,这里会报错
+                'count': carts.get(sku.id).get('count'),
                 'selected': str(carts.get(sku.id)['selected']),
                 'default_image_url': sku.default_image.url,  # todo 这里注意要加上.url
                 'price': str(sku.price),  # 从Decimal('10.2')中取出'10.2'，方便json解析
