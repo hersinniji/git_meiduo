@@ -1,3 +1,16 @@
+# 思路分析
+"""
+一 把需求写下来 (前端需要收集什么 后端需要做什么)
+
+二 把大体思路写下来(后端的大体思路)
+
+三 把详细思路完善一下(纯后端)
+
+四 确定我们请求方式和路由
+
+"""
+
+# Create your views here.
 import base64
 import json
 import pickle
@@ -5,7 +18,6 @@ import pickle
 from django import http
 from django.shortcuts import render
 
-# Create your views here.
 from django.views import View
 from django_redis import get_redis_connection
 
@@ -72,40 +84,38 @@ ps:MD5也可以进行加密编码,但是其转换不可逆,同一个数据转换
 """
 
 
-# #############################增加数据进购物车###################################
-
-"""
-1.需求
-            前端: 收集信息(商品id, 数量count, 选中状态是可选的,默认为选中)
-                如果用户登录了,则请求中携带session_id
-                如果用户没有登录,请求不带session_id
-            后端: 增加数据到购物车
-        2.大体思路
-            接收数据
-            验证数据
-            存储数据
-            返回响应
-        3.详细思路
-            1.接收数据(sku_id, count)
-            2.验证数据
-            3.根据用户是否登录来判断存储数据的位置和细节
-            4.登录用户redis里面
-                4.1 链接redis
-                4.2 存储(hash,set)
-                4.3 返回响应
-            5.非登录用户 cookie里面
-                5.1 转为二进制
-                5.2 加密
-                5.3 存在cookie里面
-                5.4 返回响应
-        4.请求方式和路由
-            POST   carts/
-"""
-
-
 class CartView(View):
 
+    # 增加购物车
     def post(self, request):
+
+        """
+        1.需求
+                    前端: 收集信息(商品id, 数量count, 选中状态是可选的,默认为选中)
+                        如果用户登录了,则请求中携带session_id
+                        如果用户没有登录,请求不带session_id
+                    后端: 增加数据到购物车
+                2.大体思路
+                    接收数据
+                    验证数据
+                    存储数据
+                    返回响应
+                3.详细思路
+                    1.接收数据(sku_id, count)
+                    2.验证数据
+                    3.根据用户是否登录来判断存储数据的位置和细节
+                    4.登录用户redis里面
+                        4.1 链接redis
+                        4.2 存储(hash,set)
+                        4.3 返回响应
+                    5.非登录用户 cookie里面
+                        5.1 转为二进制
+                        5.2 加密
+                        5.3 存在cookie里面
+                        5.4 返回响应
+                4.请求方式和路由
+                    POST   carts/
+        """
 
         # 1.接收数据(sku_id, count)
         json_data = json.loads(request.body.decode())
@@ -132,13 +142,21 @@ class CartView(View):
             # 4.登录用户redis里面
             # 4.1链接redis
             redis_conn = get_redis_connection('carts')
+
+            # 创建管道
+            pl = redis_conn.pipeline()
+
             # 4.2存储(hash, set)
             # HSET key field value
             # 将哈希表key中的域field的值设为value 。
-            redis_conn.hset('carts_%s' % request.user.id, sku_id, count)
+            pl.hset('carts_%s' % request.user.id, sku_id, count)
             # SADD key member[member...]
             # 将一个或多个member元素加入到集合key当中，已经存在于集合的member元素将被忽略。
-            redis_conn.sadd('selected_%s' % request.user.id, sku_id)
+            pl.sadd('selected_%s' % request.user.id, sku_id)
+
+            # 执行管道
+            pl.execute()
+
             # 4.3返回响应
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
         else:
@@ -185,6 +203,105 @@ class CartView(View):
             # 5.4返回响应
             return response
 
+    # 查询购物车
+    def get(self, request):
+
+        """
+        一 把需求写下来 (前端需要收集什么 后端需要做什么)
 
 
+        二 把大体思路写下来(后端的大体思路)
+            1.获取用户信息,根据用户信息进行判断
+            2.登陆用户redis查询
+                2.1 连接redis
+                2.2 hash   {sku_id:count}
+                2.3 set     [sku_id]
+
+            3.未登录用户cookie查询
+                3.1 读取cookie
+                3.2 判断carts数据,如果有则解码数据,如果没有则初始化一个字典
+                    {sku_id: {count:xxx,selected:xxxx}}
+
+            4.根据id查询商品信息信息
+            5.展示
+        三 把详细思路完善一下(纯后端)
+            1.获取用户信息,根据用户信息进行判断用户是否登录
+            2.登录用户redis查询
+                链接redis
+                hash  {sku_id:count}
+                set   被勾选商品的id [sku_id]
+            3.未登录用户cookie查询
+                获取/读取cookie信息
+                判断carts数据   carts:{sku_id:{count:xxx, selected:xxx}}
+                如果有则解码数据
+                没有则初始化一个空字典
+            4.根据id查询商品信息
+            5.返回响应
+        四 确定我们请求方式和路由
+            GET   carts/
+        """
+
+        # 1.获取用户信息, 根据用户信息进行判断用户是否登录
+        user = request.user
+
+        # 2.登录用户redis查询
+        if user.is_authenticated:
+            # 链接redis
+            redis_conn = get_redis_connection('carts')
+            pl = redis_conn.pipeline()
+            # hash哈希类型  user_id  {sku_id:count}
+            sku_id_count = pl.hgetall('carts_%s' % user.id)
+            # set无序集合   被勾选商品的id [sku_id]
+            selected_ids = pl.smembers('selected_%s' % user.id)
+            # 为了后面统一获取sku_id时都是从一个数据类型中获取的,这里将登录后信息也转为一个字典
+            # 将redis的数据统一为cookie的格式 或者
+            # 将cookie的数据统一为redis的格式
+            carts = {}
+            # todo 解包 dict.items()
+            for sku_id, count in sku_id_count.items():
+                if sku_id in selected_ids:
+                    selected = True
+                else:
+                    selected = False
+                carts[sku_id] = {
+                    'selected': selected,
+                    'count': int(count)
+                }
+
+        # 3.未登录用户cookie查询
+        else:
+            # 获取/读取cookie信息
+            cookie_str = request.COOKIES.get('carts')
+            # 判断carts数据   carts:{sku_id:{count:xxx, selected:xxx}}
+            if cookie_str is None:
+                # 没有则初始化一个空字典
+                carts = {}
+            else:
+                # 如果有则解码数据
+                carts = pickle.loads(base64.b64decode(cookie_str))
+
+        # 4.todo 根据id查询商品信息 cookie里面为:
+        # carts: {
+        #   sku_id1:{count:xxx, selected:xxx},
+        #   sku_id2:{count:xxx, selected:xxx},
+        #   }
+        # 获取所有商品的id对象
+        ids = carts.keys()
+        # 根据商品的id获取商品的对象
+        skus = SKU.objects.filter(id__in=ids)
+        sku_list = []
+        for sku in skus:
+            sku_list.append({
+                'id': sku.id,
+                'name': sku.name,
+                'count': carts.get(sku.id)['count'],
+                'selected': str(carts.get(sku.id)['selected']),
+                'default_image_url': sku.default_image.url,  # todo 这里注意要加上.url
+                'price': str(sku.price),  # 从Decimal('10.2')中取出'10.2'，方便json解析
+                'amount': str(sku.price * carts.get(sku.id).get('count'))
+            })
+        context = {'cart_skus': sku_list}
+
+        # 5.返回响应
+        return render(request, 'cart.html', context)
 
