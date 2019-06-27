@@ -305,3 +305,7 @@ class CartView(View):
         # 5.返回响应
         return render(request, 'cart.html', context)
 
+    # 修改购物车
+    def put(self, request):
+
+        return 
