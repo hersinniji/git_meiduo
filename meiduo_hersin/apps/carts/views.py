@@ -308,4 +308,115 @@ class CartView(View):
     # 修改购物车
     def put(self, request):
 
-        return 
+        """
+                一 把需求写下来 (前端需要收集什么 后端需要做什么)
+                    前端 收集修改的sku_id, count, selected传递给后端, 发送ajax请求
+                    后端 从数据库/cookie里面更新数据,并且返回
+                二 把大体思路写下来(后端的大体思路)
+                    1.接收数据
+                    2.验证数据
+                    3.获取用户的信息
+                    4.登陆用户更新redis数据
+                        4.1 连接redis
+                        4.2 hash
+                        4.3 set
+                        4.4 返回相应
+                    5.未登录更新cookie数据
+                        5.1 获取cart数据,并判断
+                        5.2 更新指定数据
+                        5.3 对字典数据进行处理,并设置cookie
+                        5.4 返回相应
+                三 把详细思路完善一下(纯后端)
+                    1. 接收数据(sku_id, count, selected)
+                    2. 验证数据
+                    3. 获取用户的信息
+                    4. 登录用户更新redis数据
+                        hash
+                        set
+                    5. 非登录用户更新cookie信息
+                        carts: {sku_id1: {'count': xxx, 'selected: xxx}, sku_id2:{.........}}
+
+                    6. 返回响应
+                四 确定我们请求方式和路由
+                    PUT   carts/
+                """
+
+        # 1.接收数据
+        json_dict = json.loads(request.body.decode())
+        sku_id = json_dict.get('sku_id')
+        count = json_dict.get('count')
+        selected = json_dict.get('selected')
+        # 2.验证数据
+        # 2.1 是否有空值
+        if not all([sku_id, count]):
+            return http.JsonResponse({'cdoe': RETCODE.NODATAERR, 'errmsg': '参数不齐全'})
+        # 2.2 判断商品是否存在
+        try:
+            sku = SKU.objects.get(id=sku_id)
+        except Exception as e:
+            return http.JsonResponse({'cdoe': RETCODE.NODATAERR, 'errmsg': '商品不存在'})
+        # 2.3 判断传入的数量是否为数值
+        try:
+            count = int(count)
+        except Exception as e:
+            return http.JsonResponse({'cdoe': RETCODE.NODATAERR, 'errmsg': '参数错误'})
+        # 3.获取用户的信息
+        if request.user.is_authenticated:
+            # 4.登陆用户更新redis数据
+            #     4.1 连接redis
+            redis_conn = get_redis_connection('carts')
+            pl = redis_conn.pipeline()
+            #     4.2 hash   user_id  sku_id: count
+            pl.hset('carts_%s' % request.user.id, sku_id, count)
+            #     4.3 set    selected_user_id: selected_id
+            # 这里的原则就是:如果勾选,则将sku_id加进集合(集合是无重复),如果没有勾选,则从集合中原有的进行删除
+            if selected:
+                pl.sadd('selected_%s' % request.user.id, sku_id)
+            else:
+                # todo 这里原来就是未勾选怎么办?----------------------------------------------------
+                pl.srem('selected_%s' % request.user.id, sku_id)
+            #     4.4 返回相应
+            cart_sku = {
+                'id': sku_id,
+                'count': count,
+                'selected': selected,
+                'default_image_url': sku.default_image.url,
+                'price': sku.price,
+                'amount': count * sku.price
+            }
+            return http.JsonResponse({'code': RETCODE, 'errmsg': 'ok', 'cart_sku': cart_sku})
+        # 5.未登录更新cookie数据
+        else:
+            #     5.1 获取cart数据,并判断
+            cart_cookie = request.COOKIES.get('carts')
+            # todo ==========================================================================
+            print(type(cart_cookie))
+            # carts: sku_id: {'count': count, 'selected': xxx },.........
+            # 判断cart_cookie是否为空,为空则初始化一个空字典, 不为空的话进行解码
+            if cart_cookie is None:
+                carts = {}
+            else:
+                carts = pickle.loads(base64.b64decode(cart_cookie))
+            #     5.2 更新指定数据
+            if sku_id in carts:
+                carts[sku_id] = {
+                    'count': count,
+                    'selected': selected
+                }
+                # carts[sku_id]['count'] = count
+                # carts[sku_id]['selected'] = selected
+            en = base64.b64encode(pickle.dumps(carts))
+            #     5.3 对字典数据进行处理,并设置cookie
+            cart_sku = {
+                'id': sku_id,
+                'count': count,
+                'selected': selected,
+                'name': sku.name,
+                'default_image_url': sku.default_image.url,
+                'price': sku.price,
+                'amount': sku.price * count,
+            }
+            response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'cart_sku': cart_sku})
+            response.set_cookie('carts', en)
+            #     5.4 返回相应
+            return response
