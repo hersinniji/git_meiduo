@@ -4,16 +4,6 @@
     <list default="true" id="33023929-96ec-40d0-b020-348c5bb0b96f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/apps/carts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/apps/carts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/goods_judge.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/goods_judge.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/order_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/order_success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/pay_success.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/pay_success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/place_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/place_order.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/user_center_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/user_center_order.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/user_center_pass.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/user_center_pass.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user_center_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user_center_info.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/user_center_site.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/user_center_site.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,15 +43,6 @@
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/detail.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="18" column="42" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -109,14 +90,18 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/apps/carts/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="296" column="52" lean-forward="true" selection-start-line="296" selection-start-column="52" selection-end-line="296" selection-end-column="52" />
+            <state relative-caret-position="728">
+              <caret line="495" column="22" lean-forward="true" selection-start-line="495" selection-start-column="22" selection-end-line="495" selection-end-column="22" />
               <folding>
                 <element signature="e#7#97#1" />
                 <element signature="e#0#13#0" expanded="true" />
                 <element signature="e#2586#5289#0" />
                 <element signature="e#2038#2893#1" />
+                <element signature="e#5680#8872#0" />
                 <element signature="e#5687#6501#1" />
+                <element signature="e#8923#13085#0" />
+                <element signature="e#8923#9187#1" />
+                <element signature="e#13421#13603#1" />
               </folding>
             </state>
           </provider>
@@ -125,8 +110,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/cart.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="71" column="33" lean-forward="true" selection-start-line="71" selection-start-column="33" selection-end-line="71" selection-end-column="33" />
+            <state relative-caret-position="164">
+              <caret line="74" column="31" selection-start-line="74" selection-start-column="31" selection-end-line="74" selection-end-column="31" />
               <folding>
                 <element signature="n#head#0;n#html#0;n#!!top" />
                 <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
@@ -139,8 +124,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/js/cart.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="43" column="55" lean-forward="true" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
+            <state relative-caret-position="367">
+              <caret line="186" column="52" lean-forward="true" selection-start-line="186" selection-start-column="52" selection-end-line="186" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -149,7 +134,7 @@
         <entry file="file://$PROJECT_DIR$/apps/carts/demo.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+              <caret line="12" selection-start-line="12" selection-end-line="12" />
             </state>
           </provider>
         </entry>
@@ -203,6 +188,8 @@
       <find>has</find>
       <find>购物车</find>
       <find>total</find>
+      <find>select</find>
+      <find>alert</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -556,21 +543,7 @@
       <workItem from="1561537349956" duration="11030000" />
       <workItem from="1561551749283" duration="562000" />
       <workItem from="1561552549832" duration="2292000" />
-      <workItem from="1561619694248" duration="9146000" />
-    </task>
-    <task id="LOCAL-00004" summary="通过手机号/用户名实现登录">
-      <created>1560606588915</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1560606588915</updated>
-    </task>
-    <task id="LOCAL-00005" summary="多种方式登录(封装和抽取代码)">
-      <created>1560614456214</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1560614456214</updated>
+      <workItem from="1561619694248" duration="16816000" />
     </task>
     <task id="LOCAL-00006" summary="用户名的首页展示">
       <created>1560695921000</created>
@@ -901,24 +874,38 @@
       <option name="project" value="LOCAL" />
       <updated>1561554253284</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="用户购物车的展示">
+      <created>1561629176472</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1561629176473</updated>
+    </task>
+    <task id="LOCAL-00054" summary="实现修改购物车功能">
+      <created>1561636895863</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1561636895865</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="331940000" />
+    <option name="totallyTimeSpent" value="339610000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1375" height="904" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16067329" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15990819" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Console" order="0" weight="0.32903227" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32907802" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4989858" visible="true" weight="0.11488251" />
-      <window_info anchor="bottom" id="Debug" order="4" weight="0.28720626" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4989858" visible="true" weight="0.3381201" />
+      <window_info anchor="bottom" id="Debug" order="4" weight="0.46214098" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" />
@@ -935,14 +922,14 @@
       <window_info anchor="right" id="Database" order="4" weight="0.32842287" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1461362" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16067329" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Console" order="0" weight="0.32903227" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32907802" />
-      <window_info anchor="bottom" id="Run" order="3" sideWeight="0.4989858" weight="0.21148825" />
-      <window_info anchor="bottom" id="Debug" order="4" weight="0.23629242" />
+      <window_info active="true" anchor="bottom" id="Run" order="3" sideWeight="0.4989858" visible="true" weight="0.3381201" />
+      <window_info anchor="bottom" id="Debug" order="4" weight="0.46214098" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" />
@@ -950,7 +937,7 @@
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5010142" side_tool="true" weight="0.31009957" />
-      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.4989858" weight="0.19574468" />
+      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.4989858" weight="0.21018277" />
       <window_info anchor="bottom" id="Python Console" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -967,8 +954,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="捕获邮箱验证链接中token过期/被篡改的异常" />
-    <MESSAGE value="激活邮件的实现" />
     <MESSAGE value="ajax请求判断,用户没有登录返回json数据" />
     <MESSAGE value="创建areas子应用" />
     <MESSAGE value="省市区数据的获取" />
@@ -992,7 +977,9 @@
     <MESSAGE value="用户的浏览记录展示" />
     <MESSAGE value="用户购物车的添加(没有考虑累加的情况)" />
     <MESSAGE value="添加购物车(判断商品是否重复)" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加购物车(判断商品是否重复)" />
+    <MESSAGE value="用户购物车的展示" />
+    <MESSAGE value="实现修改购物车功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="实现修改购物车功能" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1048,6 +1035,21 @@
   <component name="debuggerHistoryManager">
     <expressions id="watch">
       <expression>
+        <expression-string>SKU.objects.get(sku_id)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>http://www.meiduo.site:8000/carts/</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>sku</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>request.GET.get('code')</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -1079,11 +1081,6 @@
       </expression>
       <expression>
         <expression-string>request.POST</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>request.remembered</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1369,13 +1366,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.virtualenvs/hersin_django_vir1/lib/python3.5/site-packages/django/views/generic/base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="75" column="40" lean-forward="true" selection-start-line="75" selection-start-column="40" selection-end-line="75" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/detail.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -1431,13 +1421,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/apps/carts/demo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/apps/goods/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -1448,17 +1431,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/js/cart.js">
+    <entry file="file://$PROJECT_DIR$/apps/carts/demo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="43" column="55" lean-forward="true" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
+        <state relative-caret-position="240">
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/cart.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="71" column="33" lean-forward="true" selection-start-line="71" selection-start-column="33" selection-end-line="71" selection-end-column="33" />
+        <state relative-caret-position="164">
+          <caret line="74" column="31" selection-start-line="74" selection-start-column="31" selection-end-line="74" selection-end-column="31" />
           <folding>
             <element signature="n#head#0;n#html#0;n#!!top" />
             <element signature="n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
@@ -1467,16 +1450,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/static/js/cart.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="186" column="52" lean-forward="true" selection-start-line="186" selection-start-column="52" selection-end-line="186" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.virtualenvs/hersin_django_vir1/lib/python3.5/site-packages/django/views/generic/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="111">
+          <caret line="87" selection-start-line="87" selection-end-line="87" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/apps/carts/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="296" column="52" lean-forward="true" selection-start-line="296" selection-start-column="52" selection-end-line="296" selection-end-column="52" />
+        <state relative-caret-position="728">
+          <caret line="495" column="22" lean-forward="true" selection-start-line="495" selection-start-column="22" selection-end-line="495" selection-end-column="22" />
           <folding>
             <element signature="e#7#97#1" />
             <element signature="e#0#13#0" expanded="true" />
             <element signature="e#2586#5289#0" />
             <element signature="e#2038#2893#1" />
+            <element signature="e#5680#8872#0" />
             <element signature="e#5687#6501#1" />
+            <element signature="e#8923#13085#0" />
+            <element signature="e#8923#9187#1" />
+            <element signature="e#13421#13603#1" />
           </folding>
         </state>
       </provider>

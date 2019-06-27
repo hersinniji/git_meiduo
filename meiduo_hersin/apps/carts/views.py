@@ -253,6 +253,7 @@ class CartView(View):
             sku_id_count = pl.hgetall('carts_%s' % user.id)
             # set无序集合   被勾选商品的id [sku_id]
             selected_ids = pl.smembers('selected_%s' % user.id)
+            pl.execute()
             # 为了后面统一获取sku_id时都是从一个数据类型中获取的,这里将登录后信息也转为一个字典
             # 将redis的数据统一为cookie的格式 或者
             # 将cookie的数据统一为redis的格式
@@ -368,6 +369,7 @@ class CartView(View):
             pl = redis_conn.pipeline()
             #     4.2 hash   user_id  sku_id: count
             pl.hset('carts_%s' % request.user.id, sku_id, count)
+            pl.execute()
             #     4.3 set    selected_user_id: selected_id
             # 这里的原则就是:如果勾选,则将sku_id加进集合(集合是无重复),如果没有勾选,则从集合中原有的进行删除
             if selected:
@@ -419,4 +421,77 @@ class CartView(View):
             response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'cart_sku': cart_sku})
             response.set_cookie('carts', en)
             #     5.4 返回相应
+            return response
+
+    # 删除购物车内商品
+    def delete(self, request):
+
+        """
+        一 把需求写下来 (前端需要收集什么 后端需要做什么)
+            前端  传要删除的sku_id
+            后端  删除数据
+        二 把大体思路写下来(后端的大体思路)
+            1.接收数据 sku_id
+            2.根据用户信息进行判断
+            3.登陆用户删除redis
+                3.1 连接redis
+                3.2 hash
+                3.3 set
+                3.4 返回相应
+            4.未登陆用户删除cookie
+                4.1 读取cookie中的数据,并且判断
+                4.2 删除数据
+                4.3 字典数据处理,并设置cookie
+                4.4 返回相应
+        三 把详细思路完善一下(纯后端)
+            1. 接收数据 sku_id
+            2. 校验数据 看有没有这个商品
+            3. 判断用户是否登录
+            4. 登录用户
+                链接redis
+                hash
+                set
+                返回响应
+            5. 未登录用户
+                读取cookie中的数据,看是否有值
+                删除后进行加密
+                组织响应数据
+                设置cookie
+                返回响应
+        四 确定我们请求方式和路由
+            DELETE  carts/
+        """
+
+        # 1.接收数据
+        json_dict = json.loads(request.body.decode())
+        sku_id = json_dict.get('sku_id')
+        # 2.根据用户信息进行判断
+        user = request.user
+        if user.is_authenticated:
+            # 3.登陆用户删除redis
+            #     3.1 连接redis
+            redis_conn = get_redis_connection('carts')
+            pl = redis_conn.pipeline()
+            #     3.2 hash
+            pl.hdel('carts_%s' % request.user.id, sku_id)
+            #     3.3 set
+            pl.srem('elected_%s' % request.user.id, sku_id)
+            pl.execute()
+            #     3.4 返回相应
+            return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
+        else:
+            # 4.未登陆用户删除cookie  carts { sku_id1:{'count': xxx, 'selected': xxx}, sku_id2:}
+            #     4.1 读取cookie中的数据,并且判断
+            cookie_data = request.COOKIES.get('carts')
+            if cookie_data is None:
+                carts = {}
+            else:
+                carts = pickle.loads(base64.b64decode(cookie_data))
+            if sku_id in carts:
+                # 4.2 删除字典里面的数据
+                del carts[sku_id]
+            en = base64.b64encode(pickle.dumps(carts))
+            response = http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
+            response.set_cookie('carts', en)
+            # 4.3 返回响应
             return response
