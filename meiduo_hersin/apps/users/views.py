@@ -241,6 +241,7 @@ class LoginView(View):
             # response = redirect(reverse('contents:index'))
             # todo 这里的cookie 值是user.username 还是 username ???
             response.set_cookie('username', username, 14*24*3600)
+            print(request.user)
             return response
         # 7.如果验证不成功则提示,用户名或密码错误
         else:
