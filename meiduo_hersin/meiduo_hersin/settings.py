@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'apps.areas.apps.AreasConfig',
     'apps.oauth.apps.OauthConfig',
+    'apps.orders.apps.OrdersConfig',
     'apps.contents.apps.ContentsConfig',
     'apps.goods.apps.GoodsConfig',
     'apps.users.apps.UsersConfig',  # 因为我们的子应用已经放到apps的包中,所以要添加apps.xxx
