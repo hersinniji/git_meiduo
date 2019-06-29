@@ -60,8 +60,13 @@ class OrderGoods(BaseModel):
         (4, '80分'),
         (5, '100分'),
     )
+
+    # 外键订单
     order = models.ForeignKey(OrderInfo, related_name='skus', on_delete=models.CASCADE, verbose_name="订单")
+
+    # 外键商品
     sku = models.ForeignKey(SKU, on_delete=models.PROTECT, verbose_name="订单商品")
+
     count = models.IntegerField(default=1, verbose_name="数量")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="单价")
     comment = models.TextField(default="", verbose_name="评价信息")
