@@ -13,7 +13,7 @@ from django_redis import get_redis_connection
 from django.utils import timezone
 
 from apps.goods.models import SKU
-from apps.orders.models import OrderInfo
+from apps.orders.models import OrderInfo, OrderGoods
 from apps.users.models import Address
 from utils.response_code import RETCODE
 
@@ -207,14 +207,14 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
             status = OrderInfo.ORDER_STATUS_ENUM['UNPAID']
         # 增加订单记录
         order = OrderInfo.objects.create(
-            order_id = order_id,
-            user = user,
-            address = address,
-            total_count = total_count,
-            total_amount = total_amount,
-            freight = freight,
-            pay_method = pay_method,
-            status = status
+            order_id=order_id,
+            user=user,
+            address=address,
+            total_count=total_count,
+            total_amount=total_amount,
+            freight=freight,
+            pay_method=pay_method,
+            status=status
         )
 
         # 2.订单商品信息(我们从redis中获取选中的商品信息)
@@ -233,14 +233,36 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
         #     2.5 获取选中的商品id  [1,2,3]
         ids = carts.keys()
         #     2.6 遍历id
+        for id in ids:
         #         2.7 查询
-        #         2.8 判断库存
+            sku = SKU.objects.get(pk=id)
+        #         2.8 判断库存count
+            if carts[id] > sku.stock:
+                return http.JsonResponse({'code': RETCODE.PARAMERR, 'errmsg': '库存不足'})
+            else:
         #         2.9 库存减少,销量增加
+                sku.stock -= carts[id]
+                sku.sales += carts[id]
+                sku.save()  # todo 注意在直接操作数据库记录对象后需要保存
         #         2.10 保存商品信息
+            OrderGoods.objects.create(
+                order=order,
+                sku=sku,
+                count=carts[id],
+                price=sku.price
+            )
         #         2.11 累加计算 总金额和总数量
-        # 3. 保存订单信息的修改
+        #     total_count += carts[id]
+        #     total_amount += (total_amount * sku.price)
+            order.total_count += carts[id]
+            order.total_amount += (total_amount * sku.price)
+
+        # 3. 保存订单信息的修改(遍历没问题后进行订单信息的保存)
+        order.save()
+
         # 4. 清除redis中选中商品的信息
+        # 暂缓实现   需要重复很多次
 
         # 5.返回响应
-        return http.JsonResponse({''})
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
 
