@@ -205,60 +205,74 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
             status = OrderInfo.ORDER_STATUS_ENUM['UNSEND']
         else:
             status = OrderInfo.ORDER_STATUS_ENUM['UNPAID']
-        # 增加订单记录
-        order = OrderInfo.objects.create(
-            order_id=order_id,
-            user=user,
-            address=address,
-            total_count=total_count,
-            total_amount=total_amount,
-            freight=freight,
-            pay_method=pay_method,
-            status=status
-        )
 
-        # 2.订单商品信息(我们从redis中获取选中的商品信息)
-        #     2.1 连接redis
-        redis_conn = get_redis_connection('carts')
-        #     2.2 hash
-        sku_id_count = redis_conn.hgetall('carts_%s' % user.id)
-        #     2.3 set
-        selected_ids = redis_conn.smembers('selected_%s' % user.id)
-        #     2.4 类型转换,转换过程中重新组织数据
-        #         选中的数据
-        #         {sku_id:count,sku_id:count}
-        carts = {}
-        for sku_id in selected_ids:
-            carts[int(sku_id)] = int(sku_id_count[sku_id])
-        #     2.5 获取选中的商品id  [1,2,3]
-        ids = carts.keys()
-        #     2.6 遍历id
-        for id in ids:
-        #         2.7 查询
-            sku = SKU.objects.get(pk=id)
-        #         2.8 判断库存count
-            if carts[id] > sku.stock:
-                return http.JsonResponse({'code': RETCODE.PARAMERR, 'errmsg': '库存不足'})
-            else:
-        #         2.9 库存减少,销量增加
-                sku.stock -= carts[id]
-                sku.sales += carts[id]
-                sku.save()  # todo 注意在直接操作数据库记录对象后需要保存
-        #         2.10 保存商品信息
-            OrderGoods.objects.create(
-                order=order,
-                sku=sku,
-                count=carts[id],
-                price=sku.price
+        # 创建事务
+        from django.db import transaction
+        with transaction.atomic():
+            # 一.实务的起点(回滚点)
+            point_id = transaction.savepoint()
+
+            # 增加订单记录
+            order = OrderInfo.objects.create(
+                order_id=order_id,
+                user=user,
+                address=address,
+                total_count=total_count,
+                total_amount=total_amount,
+                freight=freight,
+                pay_method=pay_method,
+                status=status
             )
-        #         2.11 累加计算 总金额和总数量
-        #     total_count += carts[id]
-        #     total_amount += (total_amount * sku.price)
-            order.total_count += carts[id]
-            order.total_amount += (total_amount * sku.price)
 
-        # 3. 保存订单信息的修改(遍历没问题后进行订单信息的保存)
-        order.save()
+            # 2.订单商品信息(我们从redis中获取选中的商品信息)
+            #     2.1 连接redis
+            redis_conn = get_redis_connection('carts')
+            #     2.2 hash
+            sku_id_count = redis_conn.hgetall('carts_%s' % user.id)
+            #     2.3 set
+            selected_ids = redis_conn.smembers('selected_%s' % user.id)
+            #     2.4 类型转换,转换过程中重新组织数据
+            #         选中的数据
+            #         {sku_id:count,sku_id:count}
+            carts = {}
+            for sku_id in selected_ids:
+                carts[int(sku_id)] = int(sku_id_count[sku_id])
+            #     2.5 获取选中的商品id  [1,2,3]
+            ids = carts.keys()
+            #     2.6 遍历id
+            for id in ids:
+            #         2.7 查询
+                sku = SKU.objects.get(pk=id)
+            #         2.8 判断库存count
+                if carts[id] > sku.stock:
+
+                    # 二.如果失败了,此处进行回滚
+                    transaction.savepoint_rollback(point_id)
+
+                    return http.JsonResponse({'code': RETCODE.PARAMERR, 'errmsg': '库存不足'})
+                else:
+            #         2.9 库存减少,销量增加
+                    sku.stock -= carts[id]
+                    sku.sales += carts[id]
+                    sku.save()  # todo 注意在直接操作数据库记录对象后需要保存
+            #         2.10 保存商品信息
+                OrderGoods.objects.create(
+                    order=order,
+                    sku=sku,
+                    count=carts[id],
+                    price=sku.price
+                )
+            #         2.11 累加计算 总金额和总数量
+            #     total_count += carts[id]
+            #     total_amount += (total_amount * sku.price)
+                order.total_count += carts[id]
+                order.total_amount += (total_amount * sku.price)
+
+            # 3. 保存订单信息的修改(遍历没问题后进行订单信息的保存)
+            order.save()
+
+        # 三.所有都没问题的话,提交事物
+        transaction.savepoint_commit(point_id)
 
         # 4. 清除redis中选中商品的信息
         # 暂缓实现   需要重复很多次
