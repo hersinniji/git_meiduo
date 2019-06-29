@@ -476,13 +476,11 @@ class CartView(View):
             # 3.登陆用户删除redis
             #     3.1 连接redis
             redis_conn = get_redis_connection('carts')
-            pl = redis_conn.pipeline()
-            #     3.2 hash
-            pl.hdel('carts_%s' % request.user.id, sku_id)
-            #     3.3 set
-            pl.srem('elected_%s' % request.user.id, sku_id)
-            pl.execute()
-            #     3.4 返回相应
+            #    3.2 hash
+            redis_conn.hdel('carts_%s' % request.user.id, sku_id)
+            #    3.3 set
+            redis_conn.srem('selected_%s' % request.user.id, sku_id)
+            #    3.4 返回相应
             return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
         else:
             # 4.未登陆用户删除cookie  carts { sku_id1:{'count': xxx, 'selected': xxx}, sku_id2:}

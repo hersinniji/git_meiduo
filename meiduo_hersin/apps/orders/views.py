@@ -242,7 +242,7 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
             #     2.6 遍历id
             for id in ids:
             #         2.7 查询
-                sku = SKU.objects.get(pk=id)
+                sku  = SKU.objects.get(pk=id)
             #         2.8 判断库存count
                 if carts[id] > sku.stock:
 
@@ -250,11 +250,30 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
                     transaction.savepoint_rollback(point_id)
 
                     return http.JsonResponse({'code': RETCODE.PARAMERR, 'errmsg': '库存不足'})
-                else:
-            #         2.9 库存减少,销量增加
-                    sku.stock -= carts[id]
-                    sku.sales += carts[id]
-                    sku.save()  # todo 注意在直接操作数据库记录对象后需要保存
+
+        #         2.9 库存减少,销量增加
+        #         sku.stock -= carts[id]
+        #         sku.sales += carts[id]
+        #         sku.save()  # todo 注意在直接操作数据库记录对象后需要保存
+
+
+                # todo 用乐观锁来实现
+                # 在更新的时候判断此时的库存是否是之前查询出的库存一致
+                # 一致则更新成功 返回1
+                # 不一致则不更新 返回0
+                # 1.记录之前的库存
+                old_stock = sku.stock
+                # 2.计算更新的库存
+                new_stock = sku.stock - carts[id]
+                new_sales = sku.sales + carts[id]
+                # 3.更新的时候判断
+                result = SKU.objects.filter(id=sku_id, stock=old_stock).update(stock=new_stock, sales=new_sales)
+                if result == 0:
+                    print('下单失败')
+                    transaction.savepoint_rollback(point_id)
+                    return http.JsonResponse({'code': RETCODE.STOCKERR, 'errmsg': '下单失败'})
+
+
             #         2.10 保存商品信息
                 OrderGoods.objects.create(
                     order=order,
