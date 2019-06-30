@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.oauth.apps.OauthConfig',
     'apps.orders.apps.OrdersConfig',
     'apps.contents.apps.ContentsConfig',
+    'apps.pay.apps.PayConfig',
     'apps.goods.apps.GoodsConfig',
     'apps.users.apps.UsersConfig',  # 因为我们的子应用已经放到apps的包中,所以要添加apps.xxx
     'django.contrib.staticfiles',
@@ -283,3 +284,12 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',  # Elasticsearch建立的索引库的名称
     },
 }
+
+
+# 支付宝SDK配置参数
+ALIPAY_APPID = '2016091600523030'
+ALIPAY_DEBUG = True
+ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
+ALIPAY_RETURN_URL = 'http://www.meiduo.site:8000/payment/status/'
+APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/payment/keys/app_private_key.pem')
+ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/payment/keys/alipay_public_key.pem')
