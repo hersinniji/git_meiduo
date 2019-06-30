@@ -56,7 +56,7 @@ var vm = new Vue({
                 })
                     .then(response => {
                         if (response.data.code == '0') {
-                            // this.cities = response.data.sub_data.subs;
+                            // this.cities = response.script.sub_data.subs;
                             this.cities = response.data.sub_data;
                         } else {
                             console.log(response.data);
@@ -78,7 +78,7 @@ var vm = new Vue({
                 })
                     .then(response => {
                         if (response.data.code == '0') {
-                            // this.districts = response.data.sub_data.subs;
+                            // this.districts = response.script.sub_data.subs;
                             this.districts = response.data.sub_data;
                         } else {
                             console.log(response.data);

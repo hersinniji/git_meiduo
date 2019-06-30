@@ -26,7 +26,7 @@ CREATE TABLE `tb_brand` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_brand`
+-- Dumping script for table `tb_brand`
 --
 
 LOCK TABLES `tb_brand` WRITE;
@@ -52,7 +52,7 @@ CREATE TABLE `tb_content_category` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_content_category`
+-- Dumping script for table `tb_content_category`
 --
 
 LOCK TABLES `tb_content_category` WRITE;
@@ -85,7 +85,7 @@ CREATE TABLE `tb_content` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_content`
+-- Dumping script for table `tb_content`
 --
 
 LOCK TABLES `tb_content` WRITE;
@@ -113,7 +113,7 @@ CREATE TABLE `tb_goods_category` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_goods_category`
+-- Dumping script for table `tb_goods_category`
 --
 
 LOCK TABLES `tb_goods_category` WRITE;
@@ -136,7 +136,7 @@ CREATE TABLE `tb_channel_group` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_channel_group`
+-- Dumping script for table `tb_channel_group`
 --
 
 LOCK TABLES `tb_channel_group` WRITE;
@@ -169,7 +169,7 @@ CREATE TABLE `tb_goods_channel` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_goods_channel`
+-- Dumping script for table `tb_goods_channel`
 --
 
 LOCK TABLES `tb_goods_channel` WRITE;
@@ -211,7 +211,7 @@ CREATE TABLE `tb_spu` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_spu`
+-- Dumping script for table `tb_spu`
 --
 
 LOCK TABLES `tb_spu` WRITE;
@@ -240,7 +240,7 @@ CREATE TABLE `tb_spu_specification` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_spu_specification`
+-- Dumping script for table `tb_spu_specification`
 --
 
 LOCK TABLES `tb_spu_specification` WRITE;
@@ -268,7 +268,7 @@ CREATE TABLE `tb_specification_option` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_specification_option`
+-- Dumping script for table `tb_specification_option`
 --
 
 LOCK TABLES `tb_specification_option` WRITE;
@@ -308,7 +308,7 @@ CREATE TABLE `tb_sku` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_sku`
+-- Dumping script for table `tb_sku`
 --
 
 LOCK TABLES `tb_sku` WRITE;
@@ -336,7 +336,7 @@ CREATE TABLE `tb_sku_image` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_sku_image`
+-- Dumping script for table `tb_sku_image`
 --
 
 LOCK TABLES `tb_sku_image` WRITE;
@@ -369,7 +369,7 @@ CREATE TABLE `tb_sku_specification` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tb_sku_specification`
+-- Dumping script for table `tb_sku_specification`
 --
 
 LOCK TABLES `tb_sku_specification` WRITE;

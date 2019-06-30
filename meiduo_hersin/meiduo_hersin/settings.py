@@ -49,7 +49,21 @@ INSTALLED_APPS = [
     'apps.goods.apps.GoodsConfig',
     'apps.users.apps.UsersConfig',  # 因为我们的子应用已经放到apps的包中,所以要添加apps.xxx
     'django.contrib.staticfiles',
+    'django_crontab',  # 定时任务
     'haystack',
+]
+
+# 静态文件生成定时器
+CRONJOBS = [
+    # 每1分钟生成一次首页静态文件
+
+    # 参数1: 频次
+    # 分 时 日 月 周
+
+    # 参数2: 任务(函数)
+
+    # 参数3: 日志
+    ('*/1 * * * *', 'apps.contents.crons.generate_static_index_html', '>> ' + os.path.join(BASE_DIR, 'logs/crontab.log'))
 ]
 
 MIDDLEWARE = [
@@ -287,9 +301,10 @@ HAYSTACK_CONNECTIONS = {
 
 
 # 支付宝SDK配置参数
-ALIPAY_APPID = '2016091600523030'
+ALIPAY_APPID = '2016101100661596'
 ALIPAY_DEBUG = True
 ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 ALIPAY_RETURN_URL = 'http://www.meiduo.site:8000/payment/status/'
-APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/payment/keys/app_private_key.pem')
-ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/payment/keys/alipay_public_key.pem')
+APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/app_private_key.pem')
+ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/alipay_public_key.pem')
+# https://openapi.alipaydev.com/gateway.do

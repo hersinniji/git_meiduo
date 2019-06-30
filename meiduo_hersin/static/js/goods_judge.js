@@ -140,7 +140,7 @@ var vm = new Vue({
 //     $.ajax({
 //         url: url,
 //         type: 'post',
-//         data: JSON.stringify(params),
+//         script: JSON.stringify(params),
 //         contentType: 'application/json',
 //         headers: {'X-CSRFToken':getCookie('csrftoken')},
 //         success:function (response) {

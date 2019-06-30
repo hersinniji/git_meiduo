@@ -306,10 +306,10 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
 
 
 # 提交订单后展示的支付页面
-class OrderSuccessView(LoginRequiredMixin, View):
+class OrderSuccessView(LoginRequiredMixin,View):
 
-    def get(self, request):
 
+    def get(self,request):
         order_id = request.GET.get('order_id')
         payment_amount = request.GET.get('payment_amount')
         pay_method = request.GET.get('pay_method')

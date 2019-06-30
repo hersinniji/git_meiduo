@@ -249,7 +249,7 @@ class REST:
         # 创建包体
         b = ''
         for a in datas:
-            b += '<data>%s</data>' % (a)
+            b += '<script>%s</script>' % (a)
 
         body = '<?xml version="1.0" encoding="utf-8"?><SubAccount><datas>' + b + '</datas><to>%s</to><templateId>%s</templateId><appId>%s</appId>\
             </SubAccount>\

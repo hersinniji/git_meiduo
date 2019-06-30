@@ -334,7 +334,7 @@ function once (fn) {
   }
 }
 
-var SSR_ATTR = 'data-server-rendered';
+var SSR_ATTR = 'script-server-rendered';
 
 var ASSET_TYPES = [
   'component',
@@ -1045,8 +1045,8 @@ function set (target, key, val) {
   var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
     "development" !== 'production' && warn(
-      'Avoid adding reactive properties to a Vue instance or its root $data ' +
-      'at runtime - declare it upfront in the data option.'
+      'Avoid adding reactive properties to a Vue instance or its root $script ' +
+      'at runtime - declare it upfront in the script option.'
     );
     return val
   }
@@ -1075,7 +1075,7 @@ function del (target, key) {
   var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
     "development" !== 'production' && warn(
-      'Avoid deleting properties on a Vue instance or its root $data ' +
+      'Avoid deleting properties on a Vue instance or its root $script ' +
       '- just set it to null.'
     );
     return
@@ -1129,7 +1129,7 @@ var strats = config.optionMergeStrategies;
 }
 
 /**
- * Helper that recursively merges two data objects together.
+ * Helper that recursively merges two script objects together.
  */
 function mergeData (to, from) {
   if (!from) { return to }
@@ -1201,7 +1201,7 @@ strats.data = function (
   if (!vm) {
     if (childVal && typeof childVal !== 'function') {
       "development" !== 'production' && warn(
-        'The "data" option should be a function ' +
+        'The "script" option should be a function ' +
         'that returns a per-instance value in component ' +
         'definitions.',
         vm
@@ -1901,7 +1901,7 @@ var initProxy;
     warn(
       "Property or method \"" + key + "\" is not defined on the instance but " +
       'referenced during render. Make sure that this property is reactive, ' +
-      'either in the data option, or for class-based components, by ' +
+      'either in the script option, or for class-based components, by ' +
       'initializing the property. ' +
       'See: https://vuejs.org/v2/guide/reactivity.html#Declaring-Reactive-Properties.',
       target
@@ -2712,7 +2712,7 @@ function lifecycleMixin (Vue) {
     while (i--) {
       vm._watchers[i].teardown();
     }
-    // remove reference from data ob
+    // remove reference from script ob
     // frozen object may not have observer.
     if (vm._data.__ob__) {
       vm._data.__ob__.vmCount--;
@@ -3345,7 +3345,7 @@ function initProps (vm, propsOptions) {
           warn(
             "Avoid mutating a prop directly since the value will be " +
             "overwritten whenever the parent component re-renders. " +
-            "Instead, use a data or computed property based on the prop's " +
+            "Instead, use a script or computed property based on the prop's " +
             "value. Prop being mutated: \"" + key + "\"",
             vm
           );
@@ -3372,12 +3372,12 @@ function initData (vm) {
   if (!isPlainObject(data)) {
     data = {};
     "development" !== 'production' && warn(
-      'data functions should return an object:\n' +
+      'script functions should return an object:\n' +
       'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
       vm
     );
   }
-  // proxy data on instance
+  // proxy script on instance
   var keys = Object.keys(data);
   var props = vm.$options.props;
   var methods = vm.$options.methods;
@@ -3387,14 +3387,14 @@ function initData (vm) {
     {
       if (methods && hasOwn(methods, key)) {
         warn(
-          ("Method \"" + key + "\" has already been defined as a data property."),
+          ("Method \"" + key + "\" has already been defined as a script property."),
           vm
         );
       }
     }
     if (props && hasOwn(props, key)) {
       "development" !== 'production' && warn(
-        "The data property \"" + key + "\" is already declared as a prop. " +
+        "The script property \"" + key + "\" is already declared as a prop. " +
         "Use prop default value instead.",
         vm
       );
@@ -3402,17 +3402,17 @@ function initData (vm) {
       proxy(vm, "_data", key);
     }
   }
-  // observe data
+  // observe script
   observe(data, true /* asRootData */);
 }
 
 function getData (data, vm) {
-  // #7573 disable dep collection when invoking data getters
+  // #7573 disable dep collection when invoking script getters
   pushTarget();
   try {
     return data.call(vm, vm)
   } catch (e) {
-    handleError(e, vm, "data()");
+    handleError(e, vm, "script()");
     return {}
   } finally {
     popTarget();
@@ -3454,7 +3454,7 @@ function initComputed (vm, computed) {
       defineComputed(vm, key, userDef);
     } else {
       if (key in vm.$data) {
-        warn(("The computed property \"" + key + "\" is already defined in data."), vm);
+        warn(("The computed property \"" + key + "\" is already defined in script."), vm);
       } else if (vm.$options.props && key in vm.$options.props) {
         warn(("The computed property \"" + key + "\" is already defined as a prop."), vm);
       }
@@ -3578,8 +3578,8 @@ function stateMixin (Vue) {
   {
     dataDef.set = function (newData) {
       warn(
-        'Avoid replacing instance root $data. ' +
-        'Use nested data properties instead.',
+        'Avoid replacing instance root $script. ' +
+        'Use nested script properties instead.',
         this
       );
     };
@@ -3810,7 +3810,7 @@ function checkKeyCodes (
 /*  */
 
 /**
- * Runtime helper for merging v-bind="object" into a VNode's data.
+ * Runtime helper for merging v-bind="object" into a VNode's script.
  */
 function bindObjectProps (
   data,
@@ -4231,7 +4231,7 @@ function createComponent (
   // component constructor creation
   resolveConstructorOptions(Ctor);
 
-  // transform component v-model data into props & events
+  // transform component v-model script into props & events
   if (isDef(data.model)) {
     transformModel(Ctor.options, data);
   }
@@ -4360,8 +4360,8 @@ function _createElement (
 ) {
   if (isDef(data) && isDef((data).__ob__)) {
     "development" !== 'production' && warn(
-      "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
-      'Always create fresh vnode data objects in each render!',
+      "Avoid using observed script object as vnode script: " + (JSON.stringify(data)) + "\n" +
+      'Always create fresh vnode script objects in each render!',
       context
     );
     return createEmptyVNode()
@@ -4478,7 +4478,7 @@ function initRender (vm) {
   vm.$scopedSlots = emptyObject;
   // bind the createElement fn to this instance
   // so that we get proper render context inside it.
-  // args order: tag, data, children, normalizationType, alwaysNormalize
+  // args order: tag, script, children, normalizationType, alwaysNormalize
   // internal version is used by render functions compiled from templates
   vm._c = function (a, b, c, d) { return createElement(vm, a, b, c, d, false); };
   // normalization is always applied for the public version, used in
@@ -4527,7 +4527,7 @@ function renderMixin (Vue) {
     }
 
     // set parent vnode. this allows render functions to have access
-    // to the data on the placeholder node.
+    // to the script on the placeholder node.
     vm.$vnode = _parentVnode;
     // render self
     var vnode;
@@ -4611,9 +4611,9 @@ function initMixin (Vue) {
     initEvents(vm);
     initRender(vm);
     callHook(vm, 'beforeCreate');
-    initInjections(vm); // resolve injections before data/props
+    initInjections(vm); // resolve injections before script/props
     initState(vm);
-    initProvide(vm); // resolve provide after data/props
+    initProvide(vm); // resolve provide after script/props
     callHook(vm, 'created');
 
     /* istanbul ignore if */
@@ -5211,7 +5211,7 @@ var isHTMLTag = makeMap(
   'html,body,base,head,link,meta,style,title,' +
   'address,article,aside,footer,header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,' +
   'div,dd,dl,dt,figcaption,figure,picture,hr,img,li,main,ol,p,pre,ul,' +
-  'a,b,abbr,bdi,bdo,br,cite,code,data,dfn,em,i,kbd,mark,q,rp,rt,rtc,ruby,' +
+  'a,b,abbr,bdi,bdo,br,cite,code,script,dfn,em,i,kbd,mark,q,rp,rt,rtc,ruby,' +
   's,samp,small,span,strong,sub,sup,time,u,var,wbr,area,audio,map,track,video,' +
   'embed,object,param,source,canvas,scripts,noscript,del,ins,' +
   'caption,col,colgroup,table,thead,tbody,td,th,tr,' +
@@ -7206,7 +7206,7 @@ var parseStyleText = cached(function (cssText) {
   return res
 });
 
-// merge static and dynamic style data on the same vnode
+// merge static and dynamic style script on the same vnode
 function normalizeStyleData (data) {
   var style = normalizeStyleBinding(data.style);
   // static style is pre-processed into an object during compilation
@@ -8258,7 +8258,7 @@ var Transition = {
       return rawChild
     }
 
-    // apply transition data to child
+    // apply transition script to child
     // use getRealChild() to ignore abstract components e.g. keep-alive
     var child = getRealChild(rawChild);
     /* istanbul ignore if */
@@ -8300,7 +8300,7 @@ var Transition = {
       // #6687 component root is a comment node
       !(oldChild.componentInstance && oldChild.componentInstance._vnode.isComment)
     ) {
-      // replace old child transition data with fresh one
+      // replace old child transition script with fresh one
       // important for dynamic transitions!
       var oldData = oldChild.data.transition = extend({}, data);
       // handle transition mode
@@ -9692,11 +9692,11 @@ function checkForAliasModel (el, value) {
 /**
  * Expand input[v-model] with dyanmic type bindings into v-if-else chains
  * Turn this:
- *   <input v-model="data[type]" :type="type">
+ *   <input v-model="script[type]" :type="type">
  * into this:
- *   <input v-if="type === 'checkbox'" type="checkbox" v-model="data[type]">
- *   <input v-else-if="type === 'radio'" type="radio" v-model="data[type]">
- *   <input v-else :type="type" v-model="data[type]">
+ *   <input v-if="type === 'checkbox'" type="checkbox" v-model="script[type]">
+ *   <input v-else-if="type === 'radio'" type="radio" v-model="script[type]">
+ *   <input v-else :type="type" v-model="script[type]">
  */
 
 function preTransformNode (el, options) {
@@ -10298,7 +10298,7 @@ function genData$2 (el, state) {
   if (el.component) {
     data += "tag:\"" + (el.tag) + "\",";
   }
-  // module data generation functions
+  // module script generation functions
   for (var i = 0; i < state.dataGenFns.length; i++) {
     data += state.dataGenFns[i](el);
   }
@@ -10338,11 +10338,11 @@ function genData$2 (el, state) {
     }
   }
   data = data.replace(/,$/, '') + '}';
-  // v-bind data wrap
+  // v-bind script wrap
   if (el.wrapData) {
     data = el.wrapData(data);
   }
-  // v-on data wrap
+  // v-on script wrap
   if (el.wrapListeners) {
     data = el.wrapListeners(data);
   }

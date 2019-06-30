@@ -231,12 +231,12 @@ class OauthQQUserView(View):
 # s = Serializer(secret_key=settings.SECRET_KEY, expires_in=3600)
 #
 # # 3.组织要加密的数据
-# data = {
+# script = {
 #     'openid': '1234'
 # }
 #
 # # 4.加密
-# s.dumps(data)
+# s.dumps(script)
 #
 # # ###########################itadangerous的解密使用##################################
 # # 解密所需要的秘钥和时间是一样的
@@ -254,7 +254,7 @@ class OauthQQUserView(View):
 # s.loads('要解密的数据')
 
 # 加密之后的数据为二进制数，解密时可以直接对这个二进制数或者二进制转换后的数进行解密处理
-# >>> a = s.dumps(data)
+# >>> a = s.dumps(script)
 # >>> a
 # b'eyJhbGciOiJIUzUxMiIsImV4cCI6MTU2MDg1MzMxMCwiaWF0IjoxNTYwODQ5NzEwfQ.eyJvcGVuaWQiOiIxMjM0In0.nP9cVbmoUHCg9iHuTvXsBnzw-jqgF1KWCHGTfErpIwNfg9BvpKeP5b2_35EjOy9Gx6W171XhlCvPYRJfjc-mew'
 # >>> b = a.decode()

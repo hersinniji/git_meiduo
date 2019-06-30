@@ -14,6 +14,34 @@ from meiduo_hersin import settings
 from utils.views import LoginRequiredJSONMixin
 from utils.response_code import RETCODE
 
+
+"""
+为了帮助开发者调用开放接口，支付宝提供了开放平台服务端 SDK，
+包含 JAVA、PHP、Python、NodeJS 和 .NET 等语言版本，封装了签名&验签、HTTP 接口请求等基础功能。
+"""
+
+"""
+
+1. 沙箱 appid
+
+2. 沙箱网关
+
+3. 沙箱应用私钥   
+                
+4. 沙箱支付宝公钥
+我们自己的私钥在pay/keys/app_private_key.pem里面，公钥在支付宝的服务器里面（从终端内复制过去的）
+支付宝的私钥在自己支付宝的服务器上，支付宝的公钥在我们的pay/keys/alipay_public_key.pem里面
+
+
+axirmj7487@sandbox.com
+
+
+1. 我们需要去创建 2对公钥和私钥
+    一对是我们的
+    另外一对是支付宝的
+
+"""
+
 """
 思路：
     1.后端生成支付宝支付的链接
@@ -42,19 +70,24 @@ class PaymentView(LoginRequiredJSONMixin, View):
 
         # 2.查询要支付的订单信息
         try:
-            order = OrderInfo.objects.get(pk=order_id)
+            order = OrderInfo.objects.get(order_id=order_id,
+                                          user=request.user,
+                                          status=OrderInfo.ORDER_STATUS_ENUM['UNPAID'])
         except OrderInfo.DoesNotExist:
             return http.JsonResponse({'code': RETCODE.NODATAERR, 'errmsg': '订单信息不存在'})
 
         # 3.创建支付宝支付对象 (appid, 回调url, 私钥,公钥路径, 签名类型)
+        app_private_key_string = open(settings.APP_PRIVATE_KEY_PATH).read()
+        alipay_public_key_string = open(settings.ALIPAY_PUBLIC_KEY_PATH).read()
+
         alipay = AliPay(
             appid=settings.ALIPAY_APPID,
             app_notify_url=None,  # 默认回调url
-            app_private_key_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "keys/app_private_key.pem"),
-            alipay_public_key_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                "keys/alipay_public_key.pem"),
+            app_private_key_string=app_private_key_string,
+            # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+            alipay_public_key_string=alipay_public_key_string,
             sign_type="RSA2",  # 签名类型
-            debug=settings.ALIPAY_DEBUG
+            debug=True
         )
 
         # 4.生成登录支付宝的连接
@@ -62,15 +95,15 @@ class PaymentView(LoginRequiredJSONMixin, View):
             out_trade_no=order_id,
             total_amount=str(order.total_amount),
             subject='美多商城%s' % order_id,
-            return_url=settings.ALIPAY_RETURN_URL
+            return_url=settings.ALIPAY_RETURN_URL,
         )
         # 5.响应登录支付宝的连接
         # 真实环境电脑网站支付网关：https://openapi.alipay.com/gateway.do? + order_string
         # 沙箱环境电脑网站支付网关：https://openapi.alipaydev.com/gateway.do? + order_string
-        alipay_url = settings.ALIPAY_URL + '?' + order_string
+        pay_url = settings.ALIPAY_URL + '?' + order_string
 
         # 6.返回响应(支付宝登录链接)
-        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK', 'alipay_url': alipay_url})
+        return http.JsonResponse({'code': RETCODE.OK, 'pay_url': pay_url})
 
 
 # 支付宝付款成功后回调的请求 (请求中携带支付宝返回给商家的信息,包括订单和交易流水单)
