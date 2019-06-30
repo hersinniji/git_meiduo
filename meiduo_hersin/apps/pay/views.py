@@ -128,5 +128,4 @@ class PaymentStatusView(View):
             return render(request, 'pay_success.html', context)
         # 如果订单失败，重定向到我的订单
         else:
-            # todo ===============================================
             return http.HttpResponseForbidden('非法请求')

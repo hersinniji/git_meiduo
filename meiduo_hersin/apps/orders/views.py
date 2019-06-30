@@ -297,5 +297,29 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
         # 暂缓实现   需要重复很多次
 
         # 5.返回响应
-        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'order_id': order_id})
+
+
+"""
+提交订单后展示的支付页面
+"""
+
+
+# 提交订单后展示的支付页面
+class OrderSuccessView(LoginRequiredMixin, View):
+
+    def get(self, request):
+
+        order_id = request.GET.get('order_id')
+        payment_amount = request.GET.get('payment_amount')
+        pay_method = request.GET.get('pay_method')
+
+        context = {
+            'order_id': order_id,
+            'payment_amount': payment_amount,
+            'pay_method': pay_method
+        }
+
+        return render(request, 'order_success.html', context)
+
 
