@@ -242,7 +242,7 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
             #     2.6 遍历id
             for id in ids:
             #         2.7 查询
-                sku  = SKU.objects.get(pk=id)
+                sku = SKU.objects.get(pk=id)
             #         2.8 判断库存count
                 if carts[id] > sku.stock:
 
@@ -255,7 +255,6 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
         #         sku.stock -= carts[id]
         #         sku.sales += carts[id]
         #         sku.save()  # todo 注意在直接操作数据库记录对象后需要保存
-
 
                 # todo 用乐观锁来实现
                 # 在更新的时候判断此时的库存是否是之前查询出的库存一致
@@ -273,7 +272,6 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
                     transaction.savepoint_rollback(point_id)
                     return http.JsonResponse({'code': RETCODE.STOCKERR, 'errmsg': '下单失败'})
 
-
             #         2.10 保存商品信息
                 OrderGoods.objects.create(
                     order=order,
@@ -285,7 +283,8 @@ class OrderView(LoginRequiredJSONMixin, View):  # 这里必须是登录用户
             #     total_count += carts[id]
             #     total_amount += (total_amount * sku.price)
                 order.total_count += carts[id]
-                order.total_amount += (total_amount * sku.price)
+                order.total_amount += (carts[id] * sku.price)
+                # order.total_amount = 888
 
             # 3. 保存订单信息的修改(遍历没问题后进行订单信息的保存)
             order.save()

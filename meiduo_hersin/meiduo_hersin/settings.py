@@ -301,10 +301,9 @@ HAYSTACK_CONNECTIONS = {
 
 
 # 支付宝SDK配置参数
-ALIPAY_APPID = '2016101100661596'
+ALIPAY_APPID = '2016101100662156'
 ALIPAY_DEBUG = True
 ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 ALIPAY_RETURN_URL = 'http://www.meiduo.site:8000/payment/status/'
 APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/app_private_key.pem')
 ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/keys/alipay_public_key.pem')
-# https://openapi.alipaydev.com/gateway.do
