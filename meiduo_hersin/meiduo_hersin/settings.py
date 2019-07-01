@@ -101,7 +101,10 @@ WSGI_APPLICATION = 'meiduo_hersin.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# todo 数据库主从配置步骤： 配置主从--创建读写路由--配置读写路由
+# ①:这里是第一步，增加slave数据库的配置
 DATABASES = {
+    # 主服务器  专门进行写入
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
         'HOST': '127.0.0.1',  # 数据库主机
@@ -110,8 +113,18 @@ DATABASES = {
         'PASSWORD': 'suboyang',  # 数据库用户密码
         'NAME': 'meiduo_hersin'  # 数据库名字
     },
+    # 从服务器  专门进行读取，通过读取主服务器日志进行数据同步
+    'slave': {
+        'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
+        'HOST': '127.0.0.1',  # 数据库主机
+        'PORT': 8306,  # 数据库端口
+        'USER': 'root',  # 数据库用户名
+        'PASSWORD': 'suboyang',  # 数据库用户密码
+        'NAME': 'meiduo_hersin'  # 数据库名字
+    },
 }
-
+# ③:这里是第三步，配置数据库读写路由
+DATABASE_ROUTERS = ['utils.db_router.MasterSlaveDBRouter']
 
 # 这里使用 redis数据库 的目的是为了在内存中存储session数据
 CACHES = {
