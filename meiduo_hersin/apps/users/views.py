@@ -625,6 +625,7 @@ class AddressView(View):
 # 用户中心收货地址管理(修改地址)
 class AddressUpdateView(View):
 
+    # 修改地址
     def put(self, request, address_id):
 
         # 1.接收前端提交的修改数据
@@ -753,6 +754,34 @@ class AddressUpdateView(View):
     返回响应
         
 """
+
+
+"""
+1，接收数据
+2.查询数据， address对象是否存在
+3.如果存在，更新用户信息里面的默认地址
+4.不存在的话，返回错误响应
+4.存在的话返回正确响应
+"""
+
+
+# 设置默认收货地址
+class SetDefaultAddressView(LoginRequiredJSONMixin, View):
+
+    def put(self, request, address_id):
+
+        user = request.user
+        try:
+            address = Address.objects.get(pk=address_id)
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'codel': RETCODE.NODATAERR, 'errmsg': '地址不存在'})
+        try:
+            User.objects.filter(pk=user.id).update(default_address=address)
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'codel': RETCODE.NODATAERR, 'errmsg': '用户不存在'})
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
 
 
 class UserBrowseHistoryView(LoginRequiredJSONMixin, View):
