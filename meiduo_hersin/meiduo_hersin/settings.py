@@ -97,7 +97,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'meiduo_hersin.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
