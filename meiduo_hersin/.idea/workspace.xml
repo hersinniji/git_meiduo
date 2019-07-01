@@ -8,7 +8,6 @@
       <change beforePath="$PROJECT_DIR$/static/images/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/logo.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/images/logo_hersin.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/static/images/slide01.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/slide05.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
@@ -59,8 +58,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="50" column="46" lean-forward="true" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
+            <state relative-caret-position="306">
+              <caret line="59" column="56" selection-start-line="59" selection-start-column="56" selection-end-line="59" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -211,7 +210,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -239,6 +237,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -477,13 +476,7 @@
       <workItem from="1561956220417" duration="5268000" />
       <workItem from="1561965930333" duration="7831000" />
       <workItem from="1561975501578" duration="38000" />
-    </task>
-    <task id="LOCAL-00025" summary="生成激活邮箱的url">
-      <created>1560923471738</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1560923471738</updated>
+      <workItem from="1561976908017" duration="51000" />
     </task>
     <task id="LOCAL-00026" summary="捕获邮箱验证链接中token过期/被篡改的异常">
       <created>1561019901142</created>
@@ -821,18 +814,26 @@
       <option name="project" value="LOCAL" />
       <updated>1561964126889</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="增加首页购物车simple功能(未完成)">
+      <created>1561978458605</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1561978458606</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="422159000" />
+    <option name="totallyTimeSpent" value="422210000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-4" width="1377" height="905" extended-state="6" />
+    <frame x="65" y="-4" width="1375" height="904" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" sideWeight="0.50106156" side_tool="true" weight="0.18133129" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="2" sideWeight="0.49788135" visible="true" weight="0.14843152" />
+      <window_info content_ui="combo" id="Project" order="2" sideWeight="0.49788135" visible="true" weight="0.15225707" />
       <window_info anchor="bottom" id="Database Console" order="0" weight="0.32903227" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32763532" />
@@ -886,7 +887,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="商品详情页面 统计分类商品访问量功能实现" />
     <MESSAGE value="用户浏览记录的保存" />
     <MESSAGE value="用户的浏览记录展示" />
     <MESSAGE value="用户购物车的添加(没有考虑累加的情况)" />
@@ -911,7 +911,8 @@
     <MESSAGE value="数据库的主从读写分离" />
     <MESSAGE value="使用rabbitMQ作为消息队列" />
     <MESSAGE value="添加设置默认地址功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加设置默认地址功能" />
+    <MESSAGE value="增加首页购物车simple功能(未完成)" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加首页购物车simple功能(未完成)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1336,8 +1337,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="50" column="46" lean-forward="true" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
+        <state relative-caret-position="306">
+          <caret line="59" column="56" selection-start-line="59" selection-start-column="56" selection-end-line="59" selection-end-column="56" />
         </state>
       </provider>
     </entry>
