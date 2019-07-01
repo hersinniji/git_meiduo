@@ -109,7 +109,7 @@ DATABASES = {
         'HOST': '127.0.0.1',  # 数据库主机
         'PORT': 3306,  # 数据库端口
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'suboyang',  # 数据库用户密码
+        'PASSWORD': 'mysql',  # 数据库用户密码
         'NAME': 'meiduo_hersin'  # 数据库名字
     },
     # 从服务器  专门进行读取，通过读取主服务器日志进行数据同步
@@ -118,7 +118,7 @@ DATABASES = {
         'HOST': '127.0.0.1',  # 数据库主机
         'PORT': 8306,  # 数据库端口
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'suboyang',  # 数据库用户密码
+        'PASSWORD': 'mysql',  # 数据库用户密码
         'NAME': 'meiduo_hersin'  # 数据库名字
     },
 }
