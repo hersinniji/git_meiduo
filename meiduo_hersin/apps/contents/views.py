@@ -3,10 +3,12 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
+from django_redis import get_redis_connection
 
 from apps.contents.models import ContentCategory
 from apps.contents.utils import get_categories
-
+from apps.goods.models import SKU
+from utils.response_code import RETCODE
 
 """
 
@@ -30,6 +32,7 @@ from apps.contents.utils import get_categories
 
 # 首页
 class IndexView(View):
+
     def get(self, request):
 
         """
@@ -53,7 +56,7 @@ class IndexView(View):
             'contents': contents,
         }
 
-        return render(request, 'index.html', context)
+        return render(request, 'index.html', context=context)
 
 
 """
@@ -71,3 +74,36 @@ class IndexView(View):
 # # 3.上传图片
 # # filename 写图片的绝对路径,(ps:如果图片文件在程序的工作目录下,也可以写相对路径)
 # client.upload_by_filename('/home/guaguas/Desktop/小渔船.jpg')
+
+
+# 首页简单购物车展示
+class SimpleCartsView(View):
+
+    def get(self, request):
+
+        user = request.user
+        # 登录用户
+        if user.is_authenticated:
+            # 查询redis
+            redis_conn = get_redis_connection('carts')
+            # hash
+            sku_id_count = redis_conn.hgetall('carts_%s' % user.id)
+            cart_skus = []
+            for sku_id in sku_id_count.keys():
+                sku = SKU.objects.get(pk=sku_id)
+                cart_skus.append({
+                    'name': sku.name,
+                    'count': sku_id_count[sku_id]
+                })
+        # 非登录用户
+        else:
+            # 获取cookie信息
+            cookie_str = request.COOKIES.get('carts')
+            cart_skus = []
+            for sku_id, count_selected in cookie_str.items():
+                sku = SKU.objects.get(pk=sku_id)
+                cart_skus.append({
+                    'name': sku.name,
+                    'count': count_selected['count']
+                })
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok', 'cart_skus': cart_skus})

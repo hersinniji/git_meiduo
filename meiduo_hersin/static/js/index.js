@@ -13,7 +13,7 @@ var vm = new Vue({
     },
     mounted(){
         // 获取购物车数据
-        this.get_carts();
+        // this.get_carts();
         this.username=getCookie('username');
         console.log(this.username);
     },
