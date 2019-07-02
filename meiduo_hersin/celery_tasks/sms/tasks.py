@@ -23,7 +23,7 @@ def send_sms_code(self,mobile,sms_code):
 
     if result != 0:
         # 不是0 都是失败 ,失败就应该重试
-        raise self.retry(exc=Exception('baby,just check your configuration parameter!!!'),max_retries=3)
+        raise self.retry(exc=Exception('baby,just check your configuration parameter!!!'), max_retries=3)
 
 
 # @app.task(bind=True, default_retry_delay=5)

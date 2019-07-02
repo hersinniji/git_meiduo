@@ -1,4 +1,6 @@
+import json
 import random
+import re
 
 from django import http
 from django.shortcuts import render
@@ -7,6 +9,8 @@ from django.shortcuts import render
 from django.views import View
 from django_redis import get_redis_connection
 
+from apps.users.models import User
+from apps.users.utils import get_user_by_username
 from apps.verifications.constants import image_code_expire_time, sms_code_expire_time
 from libs.captcha.captcha import captcha
 from libs.yuntongxun.sms import CCP
@@ -91,6 +95,7 @@ class ImageCodeView(View):
 
 
 class SmsCodeView(View):
+
     def get(self, request, mobile):
 
         # 1.接收参数(手机号, 用户输入的图片验证码, uuid)
@@ -100,7 +105,7 @@ class SmsCodeView(View):
         # 2.验证参数
         #     验证手机号
         #     三个参数必须有不能为空
-        if not [mobile, image_code, uuid]:
+        if not all([mobile, image_code, uuid]):
             return http.JsonResponse({'code': RETCODE.NECESSARYPARAMERR, 'errmsg': '缺少必须的参数'})
 
         # 操作外界资源(redis, mysql, file)时,进行异常捕获和处理
@@ -165,6 +170,131 @@ class SmsCodeView(View):
         send_sms_code.delay(mobile, sms_code)
 
         return http.JsonResponse({'code': RETCODE.OK, 'msg': '短信验证码发送成功!'})
+
+
+# 找回密码(第一步,获取发送短信的token)
+#   请求方式和路由:
+#       accounts/' + this.username + '/sms/token/?text='+ this.image_code + '&image_code_id=' + this.image_code_id
+#           GET     accounts/(?P<username>\w+)/sms/token/
+class PwdCodeView(View):
+
+    def get(self, request, username):
+
+        # 1.后端需要接收数据(username,用户输入的图片验证码, uuid)
+        image_code = request.GET.get('text')
+        uuid = request.GET.get('image_code_id')
+
+        # 2.验证请求参数是否为空
+        if not [username, image_code, uuid]:
+            return http.JsonResponse({'code': RETCODE.NECESSARYPARAMERR, 'errmsg': '缺少必须的参数'})
+
+        # 3.判断用户是否符合规则
+        if not re.match(r'^[0-9a-zA-Z_]{5,20}$', username):
+            return http.HttpResponseBadRequest('用户名不符合规则')
+
+        # 4.验证用户输入的图片验证码和服务器保存的图片验证码一致
+        # 4.1 从redis里面获取验证码
+        try:
+            redis_conn = get_redis_connection('code')
+            redis_code = redis_conn.get('img_%s' % uuid)
+            # 4.1.1用户的图片验证码
+            # 4.1.2服务器的验证码
+            # 4.1.3判断验证码是否已经过期
+            if redis_code is None:
+                return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码已过期'})
+            # 4.1.4添加一个删除图片验证码的逻辑
+            #   ① 删除可以防止用户再次比对
+            #   ② 因为redis数据库是保存在内存中,因此,不用的话就删掉,节省内存空间
+            redis_conn.delete('img_%s' % uuid)
+        except Exception as e:
+            logger.error(e)
+            return http.JsonResponse({'code': RETCODE.DBERR, 'errmsg': '操作redis数据库出现错误!'})
+        # 4.2 比对 (redis数据都是bytes类型)
+        if redis_code.decode().lower() != image_code.lower():
+            return http.JsonResponse({'code': RETCODE.IMAGECODEERR, 'errmsg': '图形验证码错误'})
+
+        # 5.从数据库中查询对应的用户名对应的手机号
+        # 根据传入的username获取user对象。username可以是手机号也可以是账号
+        user = get_user_by_username(username)
+        mobile = user.moble
+
+        # 6.todo 组织数据
+        json_str = json.dumps({"user_id": user.id, 'mobile': user.moble})
+
+        # 7.返回响应
+        return http.JsonResponse({'mobile': mobile, 'access_token': json_str})
+
+
+# 找回密码(第二步, 发送短信)''
+#   请求方式和路由:
+#       sms_codes/?access_token='+ this.access_token
+#           GET     sms_codes/
+class PwdSMSCodeView(View):
+
+    def get(self, request):
+
+        # 1.接收请求数据
+        access_token = request.GET.get('access_token')
+        user_dict = json.loads(access_token)
+        mobile = user_dict.get('mobile')
+
+        # 2.链接redis数据库mo
+        redis_conn = get_redis_connection('code')
+
+        # 3.判断用户是否已经给用户发过短信, 如果发过那么稍等再发, 用来提示用户发送太过频繁
+        sms_send_flag = redis_conn.get('send_flag%s' % mobile)
+        if sms_send_flag:
+            return http.JsonResponse({'code': RETCODE.THROTTLINGERR, 'message': '短信发送太过频繁!'})
+
+        # 4.先生成一个随机短信码
+        sms_code = '%06d' % random.randint(0, 999999)
+
+        # 5.短信验证码保存起来(使用pipeline管道)
+        # ①创建管道
+        pipe = redis_conn.pipeline()
+        # ②操作数据
+        pipe.setex('sms_%s' % mobile, sms_code_expire_time, sms_code)
+        pipe.setex('send_flag%s' % mobile, 60, 1)
+        # ③让管道运行
+        pipe.execute()
+
+        # 6.发送短信
+        from celery_tasks.sms.tasks import send_sms_code
+        # send_sms_code 的参数平移到 delay 中
+        send_sms_code.delay(mobile, sms_code)
+
+        # 7.返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
+
+
+# 找回密码(第三步, 表单提交，验证手机号，获取修改密码的access_token)
+#   请求方式和路由
+#       accounts/' + this.username + '/password/token/?sms_code=' + this.sms_code
+#           GET     accounts/(?P<username>\w+)/password/token/
+class PwdCheckCodeView(View):
+
+    def get(self, request, username):
+
+        # 1.接收请求参数
+        user = User.objects.get(username=username)
+        sms_code = request.GET.get('sms_code')
+
+        # 2.校验短信验证码是否为空
+        if sms_code is None:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'message': '短信验证码为空'})
+
+        # 3.连接redis,判断短信验证码是否一致
+        redis_conn = get_redis_connection('code')
+        sms_code_server = redis_conn.get('sms_%s' % user.moble)
+        if sms_code != sms_code_server.decode():
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'message': '输入的短信验证码有误'})
+
+        # 4.组织数据
+        json_str = json.dumps({"user_id": user.id, 'mobile': user.moble})
+
+        # 5.返回响应
+        return http.JsonResponse({'user_id': user.id, 'access_token': json_str})
+
 
 
 

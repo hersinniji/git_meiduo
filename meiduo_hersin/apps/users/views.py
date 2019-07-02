@@ -82,7 +82,7 @@ class RegisterView(View):
         if password2 != password:
             return http.HttpResponseBadRequest('密码不合法')
         if not re.match(r'1[3-9]\d{9}', mobile):
-            return http.HttpResponseBadRequest('密码不合法')
+            return http.HttpResponseBadRequest('手机号不合法')
         if not allow:
             return http.HttpResponseBadRequest('请勾选用户同意协议')
 
@@ -246,7 +246,7 @@ class LoginView(View):
         # 7.如果验证不成功则提示,用户名或密码错误
         else:
             content = {'account_errmsg': '用户名或密码错误!'}
-            return render(request, 'login.html', content)
+            return render(request, '../../static/hersin/login.html', content)
 
 
 """
@@ -852,9 +852,51 @@ class UserBrowseHistoryView(LoginRequiredJSONMixin, View):
         return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'OK'})
 
 
+"""找回密码"""
 
 
+# 找回密码(第0步, 点击忘记密码后进行跳转)
+#   请求方式和路由
+#       find_password/
+#           GET     find_password/
+class FindPwdView(View):
 
+    def get(self, request):
+
+        return render(request, 'find_password.html')
+
+
+# 找回密码(第四步, 修改密码)
+#   请求方式和路由
+#       users/'+ this.user_id +'/password/
+#           POST    users/(?P<user_id>\d+)/password/
+class ChangePwdView(View):
+
+    def post(self, request, user_id):
+
+        # 1.接收数据
+        user = User.objects.get(pk=user_id)
+        json_dict = json.loads(request.body.decode())
+        password = json_dict.get('password')
+        password2 = json_dict.get('password2')
+        access_token = json_dict.get('access_token')
+
+        # 2.验证数据
+        if not all([password, password2]):
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'message': '参数不齐'})
+
+        # 3.判断密码是否一致
+        if not re.match(r'[0-9a-zA-Z_]{8,20}', password):
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'message': '密码不合法'})
+        if password2 != password:
+            return http.JsonResponse({'code': RETCODE.NODATAERR, 'message': '两次输入密码不一致'})
+
+        # 4.保存新密码
+        user.password = password
+        user.save()
+
+        # 5.返回响应
+        return http.JsonResponse({'code': RETCODE.OK, 'errmsg': 'ok'})
 
 
 
