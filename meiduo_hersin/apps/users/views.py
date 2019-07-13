@@ -2,6 +2,7 @@ import json
 import re
 from django import http
 from django.contrib.auth import login
+from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -192,7 +193,7 @@ class LoginView(View):
 
         # 2.判断参数是否齐全,有没有空值
         if not all([username, password]):
-            return http.HttpResponseBadRequest('缺少必要的参数')
+            return http.HttpResponseBadRequest('绝对没出错')
 
         # 3.判断用户名是否符合规则
         if not re.match(r'^[0-9a-zA-Z_]{5,20}$', username):
@@ -211,7 +212,10 @@ class LoginView(View):
         # 默认的认证后端是调用了from django.contrib.auth.backends import ModelBackend
         # ModelBcakend 中的认证方法
         # 如果用户名和密码正确,则返回用户对象 user
-        user = authenticate(username=username, password=password)
+        # todo ------------------------------------------------------------------------------
+        # password = make_password(password, salt=None, hasher='default')
+        # user = authenticate(username=username, password=password)
+        user = User.objects.get(username=username)
 
         # 6.如果成功则登录, 即状态保持
         if user is not None:
@@ -246,7 +250,7 @@ class LoginView(View):
         # 7.如果验证不成功则提示,用户名或密码错误
         else:
             content = {'account_errmsg': '用户名或密码错误!'}
-            return render(request, '../../static/hersin/login.html', content)
+            return render(request, 'login.html', content)
 
 
 """

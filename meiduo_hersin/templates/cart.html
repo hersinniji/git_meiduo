@@ -4,11 +4,11 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>美多商城-购物车</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="../static/hersin/main.css">
-    <script type="text/javascript" src="../static/js/host.js"></script>
-    <script type="text/javascript" src="../static/js/vue-2.5.16.js"></script>
-    <script type="text/javascript" src="../static/js/axios-0.18.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ static('css/reset.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ static('css/main.css') }}">
+    <script type="text/javascript" src="{{ static('js/host.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/vue-2.5.16.js') }}"></script>
+    <script type="text/javascript" src="{{ static('js/axios-0.18.0.min.js') }}"></script>
 </head>
 <body>
 <div id="app" v-cloak>
@@ -104,8 +104,8 @@
 <script>
     var cart_skus = {{ cart_skus|safe }};
 </script>
-<script type="text/javascript" src="../static/js/common.js"></script>
-<script type="text/javascript" src="../static/js/host.js"></script>
-<script type="text/javascript" src="../static/js/cart.js"></script>
+<script type="text/javascript" src="{{ static('js/common.js') }}"></script>
+<script type="text/javascript" src="{{ static('js/host.js') }}"></script>
+<script type="text/javascript" src="{{ static('js/cart.js') }}"></script>
 </body>
 </html>
